@@ -1,5 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe GameCard, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe "Validations" do
+    it { should validate_presence_of(:type) }
+    it { should validate_presence_of(:chosen) }
+    it { should validate_numericality_of(:address) }
+  end
+
+  describe "Relationships" do
+    it { should belong_to(:game) }
+    it { should belong_to(:card) }
+  end
 end

@@ -42,7 +42,7 @@ RSpec.describe GuessesController, type: :controller do
   let(:valid_session) { {} }
 
   describe "GET #index" do
-    it "returns a success response" do
+    xit "returns a success response" do
       Guess.create! valid_attributes
       get :index, params: {}, session: valid_session
       expect(response).to be_successful
@@ -50,7 +50,7 @@ RSpec.describe GuessesController, type: :controller do
   end
 
   describe "GET #show" do
-    it "returns a success response" do
+    xit "returns a success response" do
       guess = Guess.create! valid_attributes
       get :show, params: {id: guess.to_param}, session: valid_session
       expect(response).to be_successful
@@ -58,14 +58,14 @@ RSpec.describe GuessesController, type: :controller do
   end
 
   describe "GET #new" do
-    it "returns a success response" do
+    xit "returns a success response" do
       get :new, params: {}, session: valid_session
       expect(response).to be_successful
     end
   end
 
   describe "GET #edit" do
-    it "returns a success response" do
+    xit "returns a success response" do
       guess = Guess.create! valid_attributes
       get :edit, params: {id: guess.to_param}, session: valid_session
       expect(response).to be_successful
@@ -74,20 +74,20 @@ RSpec.describe GuessesController, type: :controller do
 
   describe "POST #create" do
     context "with valid params" do
-      it "creates a new Guess" do
+      xit "creates a new Guess" do
         expect {
           post :create, params: {guess: valid_attributes}, session: valid_session
         }.to change(Guess, :count).by(1)
       end
 
-      it "redirects to the created guess" do
+      xit "redirects to the created guess" do
         post :create, params: {guess: valid_attributes}, session: valid_session
         expect(response).to redirect_to(Guess.last)
       end
     end
 
     context "with invalid params" do
-      it "returns a success response (i.e. to display the 'new' template)" do
+      xit "returns a success response (i.e. to display the 'new' template)" do
         post :create, params: {guess: invalid_attributes}, session: valid_session
         expect(response).to be_successful
       end
@@ -100,14 +100,14 @@ RSpec.describe GuessesController, type: :controller do
         skip("Add a hash of attributes valid for your model")
       }
 
-      it "updates the requested guess" do
+      xit "updates the requested guess" do
         guess = Guess.create! valid_attributes
         put :update, params: {id: guess.to_param, guess: new_attributes}, session: valid_session
         guess.reload
         skip("Add assertions for updated state")
       end
 
-      it "redirects to the guess" do
+      xit "redirects to the guess" do
         guess = Guess.create! valid_attributes
         put :update, params: {id: guess.to_param, guess: valid_attributes}, session: valid_session
         expect(response).to redirect_to(guess)
@@ -115,7 +115,7 @@ RSpec.describe GuessesController, type: :controller do
     end
 
     context "with invalid params" do
-      it "returns a success response (i.e. to display the 'edit' template)" do
+      xit "returns a success response (i.e. to display the 'edit' template)" do
         guess = Guess.create! valid_attributes
         put :update, params: {id: guess.to_param, guess: invalid_attributes}, session: valid_session
         expect(response).to be_successful
@@ -124,14 +124,14 @@ RSpec.describe GuessesController, type: :controller do
   end
 
   describe "DELETE #destroy" do
-    it "destroys the requested guess" do
+    xit "destroys the requested guess" do
       guess = Guess.create! valid_attributes
       expect {
         delete :destroy, params: {id: guess.to_param}, session: valid_session
       }.to change(Guess, :count).by(-1)
     end
 
-    it "redirects to the guesses list" do
+    xit "redirects to the guesses list" do
       guess = Guess.create! valid_attributes
       delete :destroy, params: {id: guess.to_param}, session: valid_session
       expect(response).to redirect_to(guesses_url)

@@ -7,7 +7,7 @@ RSpec.describe "cards/edit", type: :view do
     ))
   end
 
-  it "renders the edit card form" do
+  xit "renders the edit card form" do
     render
 
     assert_select "form[action=?][method=?]", card_path(@card), "post" do

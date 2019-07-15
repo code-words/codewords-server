@@ -11,7 +11,7 @@ RSpec.describe "game_cards/new", type: :view do
     ))
   end
 
-  it "renders new game_card form" do
+  xit "renders new game_card form" do
     render
 
     assert_select "form[action=?][method=?]", game_cards_path, "post" do

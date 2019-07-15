@@ -10,7 +10,7 @@ RSpec.describe "players/new", type: :view do
     ))
   end
 
-  it "renders new player form" do
+  xit "renders new player form" do
     render
 
     assert_select "form[action=?][method=?]", players_path, "post" do

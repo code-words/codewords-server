@@ -5,7 +5,7 @@ RSpec.describe "games/show", type: :view do
     @game = assign(:game, Game.create!())
   end
 
-  it "renders attributes in <p>" do
+  xit "renders attributes in <p>" do
     render
   end
 end

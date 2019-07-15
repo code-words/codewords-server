@@ -9,7 +9,7 @@ RSpec.describe "guesses/edit", type: :view do
     ))
   end
 
-  it "renders the edit guess form" do
+  xit "renders the edit guess form" do
     render
 
     assert_select "form[action=?][method=?]", guess_path(@guess), "post" do

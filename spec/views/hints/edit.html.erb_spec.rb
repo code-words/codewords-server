@@ -10,7 +10,7 @@ RSpec.describe "hints/edit", type: :view do
     ))
   end
 
-  it "renders the edit hint form" do
+  xit "renders the edit hint form" do
     render
 
     assert_select "form[action=?][method=?]", hint_path(@hint), "post" do

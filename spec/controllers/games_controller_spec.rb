@@ -42,7 +42,7 @@ RSpec.describe GamesController, type: :controller do
   let(:valid_session) { {} }
 
   describe "GET #index" do
-    it "returns a success response" do
+    xit "returns a success response" do
       Game.create! valid_attributes
       get :index, params: {}, session: valid_session
       expect(response).to be_successful
@@ -50,7 +50,7 @@ RSpec.describe GamesController, type: :controller do
   end
 
   describe "GET #show" do
-    it "returns a success response" do
+    xit "returns a success response" do
       game = Game.create! valid_attributes
       get :show, params: {id: game.to_param}, session: valid_session
       expect(response).to be_successful
@@ -58,14 +58,14 @@ RSpec.describe GamesController, type: :controller do
   end
 
   describe "GET #new" do
-    it "returns a success response" do
+    xit "returns a success response" do
       get :new, params: {}, session: valid_session
       expect(response).to be_successful
     end
   end
 
   describe "GET #edit" do
-    it "returns a success response" do
+    xit "returns a success response" do
       game = Game.create! valid_attributes
       get :edit, params: {id: game.to_param}, session: valid_session
       expect(response).to be_successful
@@ -74,20 +74,20 @@ RSpec.describe GamesController, type: :controller do
 
   describe "POST #create" do
     context "with valid params" do
-      it "creates a new Game" do
+      xit "creates a new Game" do
         expect {
           post :create, params: {game: valid_attributes}, session: valid_session
         }.to change(Game, :count).by(1)
       end
 
-      it "redirects to the created game" do
+      xit "redirects to the created game" do
         post :create, params: {game: valid_attributes}, session: valid_session
         expect(response).to redirect_to(Game.last)
       end
     end
 
     context "with invalid params" do
-      it "returns a success response (i.e. to display the 'new' template)" do
+      xit "returns a success response (i.e. to display the 'new' template)" do
         post :create, params: {game: invalid_attributes}, session: valid_session
         expect(response).to be_successful
       end
@@ -100,14 +100,14 @@ RSpec.describe GamesController, type: :controller do
         skip("Add a hash of attributes valid for your model")
       }
 
-      it "updates the requested game" do
+      xit "updates the requested game" do
         game = Game.create! valid_attributes
         put :update, params: {id: game.to_param, game: new_attributes}, session: valid_session
         game.reload
         skip("Add assertions for updated state")
       end
 
-      it "redirects to the game" do
+      xit "redirects to the game" do
         game = Game.create! valid_attributes
         put :update, params: {id: game.to_param, game: valid_attributes}, session: valid_session
         expect(response).to redirect_to(game)
@@ -115,7 +115,7 @@ RSpec.describe GamesController, type: :controller do
     end
 
     context "with invalid params" do
-      it "returns a success response (i.e. to display the 'edit' template)" do
+      xit "returns a success response (i.e. to display the 'edit' template)" do
         game = Game.create! valid_attributes
         put :update, params: {id: game.to_param, game: invalid_attributes}, session: valid_session
         expect(response).to be_successful
@@ -124,14 +124,14 @@ RSpec.describe GamesController, type: :controller do
   end
 
   describe "DELETE #destroy" do
-    it "destroys the requested game" do
+    xit "destroys the requested game" do
       game = Game.create! valid_attributes
       expect {
         delete :destroy, params: {id: game.to_param}, session: valid_session
       }.to change(Game, :count).by(-1)
     end
 
-    it "redirects to the games list" do
+    xit "redirects to the games list" do
       game = Game.create! valid_attributes
       delete :destroy, params: {id: game.to_param}, session: valid_session
       expect(response).to redirect_to(games_url)

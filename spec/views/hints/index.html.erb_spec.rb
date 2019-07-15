@@ -18,7 +18,7 @@ RSpec.describe "hints/index", type: :view do
     ])
   end
 
-  it "renders a list of hints" do
+  xit "renders a list of hints" do
     render
     assert_select "tr>td", :text => nil.to_s, :count => 2
     assert_select "tr>td", :text => "Word".to_s, :count => 2

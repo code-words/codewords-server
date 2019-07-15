@@ -42,7 +42,7 @@ RSpec.describe CardsController, type: :controller do
   let(:valid_session) { {} }
 
   describe "GET #index" do
-    it "returns a success response" do
+    xit "returns a success response" do
       Card.create! valid_attributes
       get :index, params: {}, session: valid_session
       expect(response).to be_successful
@@ -50,7 +50,7 @@ RSpec.describe CardsController, type: :controller do
   end
 
   describe "GET #show" do
-    it "returns a success response" do
+    xit "returns a success response" do
       card = Card.create! valid_attributes
       get :show, params: {id: card.to_param}, session: valid_session
       expect(response).to be_successful
@@ -58,14 +58,14 @@ RSpec.describe CardsController, type: :controller do
   end
 
   describe "GET #new" do
-    it "returns a success response" do
+    xit "returns a success response" do
       get :new, params: {}, session: valid_session
       expect(response).to be_successful
     end
   end
 
   describe "GET #edit" do
-    it "returns a success response" do
+    xit "returns a success response" do
       card = Card.create! valid_attributes
       get :edit, params: {id: card.to_param}, session: valid_session
       expect(response).to be_successful
@@ -74,20 +74,20 @@ RSpec.describe CardsController, type: :controller do
 
   describe "POST #create" do
     context "with valid params" do
-      it "creates a new Card" do
+      xit "creates a new Card" do
         expect {
           post :create, params: {card: valid_attributes}, session: valid_session
         }.to change(Card, :count).by(1)
       end
 
-      it "redirects to the created card" do
+      xit "redirects to the created card" do
         post :create, params: {card: valid_attributes}, session: valid_session
         expect(response).to redirect_to(Card.last)
       end
     end
 
     context "with invalid params" do
-      it "returns a success response (i.e. to display the 'new' template)" do
+      xit "returns a success response (i.e. to display the 'new' template)" do
         post :create, params: {card: invalid_attributes}, session: valid_session
         expect(response).to be_successful
       end
@@ -100,14 +100,14 @@ RSpec.describe CardsController, type: :controller do
         skip("Add a hash of attributes valid for your model")
       }
 
-      it "updates the requested card" do
+      xit "updates the requested card" do
         card = Card.create! valid_attributes
         put :update, params: {id: card.to_param, card: new_attributes}, session: valid_session
         card.reload
         skip("Add assertions for updated state")
       end
 
-      it "redirects to the card" do
+      xit "redirects to the card" do
         card = Card.create! valid_attributes
         put :update, params: {id: card.to_param, card: valid_attributes}, session: valid_session
         expect(response).to redirect_to(card)
@@ -115,7 +115,7 @@ RSpec.describe CardsController, type: :controller do
     end
 
     context "with invalid params" do
-      it "returns a success response (i.e. to display the 'edit' template)" do
+      xit "returns a success response (i.e. to display the 'edit' template)" do
         card = Card.create! valid_attributes
         put :update, params: {id: card.to_param, card: invalid_attributes}, session: valid_session
         expect(response).to be_successful
@@ -124,14 +124,14 @@ RSpec.describe CardsController, type: :controller do
   end
 
   describe "DELETE #destroy" do
-    it "destroys the requested card" do
+    xit "destroys the requested card" do
       card = Card.create! valid_attributes
       expect {
         delete :destroy, params: {id: card.to_param}, session: valid_session
       }.to change(Card, :count).by(-1)
     end
 
-    it "redirects to the cards list" do
+    xit "redirects to the cards list" do
       card = Card.create! valid_attributes
       delete :destroy, params: {id: card.to_param}, session: valid_session
       expect(response).to redirect_to(cards_url)

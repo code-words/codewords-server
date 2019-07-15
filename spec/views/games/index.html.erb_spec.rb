@@ -8,7 +8,7 @@ RSpec.describe "games/index", type: :view do
     ])
   end
 
-  it "renders a list of games" do
+  xit "renders a list of games" do
     render
   end
 end

@@ -44,6 +44,7 @@ group :development, :test do
   gem 'shoulda-matchers'
   gem 'awesome_print'
   gem 'orderly'
+  gem 'action-cable-testing'
 end
 
 group :development do

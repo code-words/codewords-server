@@ -23,6 +23,7 @@ This is the server side of the Codewords game. It manages game state and handles
 ### API Endpoints
 
 - [Create/Initiate Game](#create_game)
+- [Join Existing Game](#join_game)
 
 #### Create Game
 
@@ -63,13 +64,96 @@ HTTP/1.1 201 Created
 <details><summary>Failed Responses</summary>
 
 ##### Name Omitted
-This error occurs if the body of the request does not contain a `name`, or if the `name` is empty. 
+This error occurs if the body of the request does not contain a `name`, or if the `name` is empty.
 ```http
 HTTP/1.1 401 Unauthorized
 ```
 ```js
 {
   "error": "You must provide a username"
+}
+```
+
+</details>
+
+#### Join Game
+
+Request that the server create a new Player instance for the requesting user and attach it to the Game denoted by the invite code.
+
+##### Request
+```http
+POST /api/v1/games/:invite_code/players
+```
+```js
+{
+  "name": "Lana"
+}
+```
+|key|description|
+|:---:|:--- |
+|`:invite_code`| (Within URI) The invite code provided by the person inviting the requesting user to their existing game.|
+|`name`|The username that the requesting user would like to use during the game|
+
+##### Successful Response
+```http
+HTTP/1.1 200 OK
+```
+```js
+{
+  "game_channel": "game_9aZReVkGAotVahGLS88vEnYw",
+  "name": "Lana",
+  "token": "uuxHQc7djqQuzWgJxAp5r1vy"
+}
+```
+|key|description|
+|:---:|:--- |
+|`game_channel`|The Websockets channel that players will connect to for game-wide data updates.|
+|`name`|A confirmation that the requested name was indeed assigned to the player.|
+|`token`|A token unique to the current player, which can be used to identify them in future requests to the server.|
+
+<details><summary>Failed Responses</summary>
+
+##### Name Omitted
+This error occurs if the body of the request does not contain a `name`, or if the `name` is empty.
+```http
+HTTP/1.1 401 Unauthorized
+```
+```js
+{
+  "error": "You must provide a username"
+}
+```
+
+##### Name Already In Use
+This error occurs if the `name` requested by the user is already in use by another Player in this game.
+```http
+HTTP/1.1 401 Unauthorized
+```
+```js
+{
+  "error": "That username is already taken"
+}
+```
+
+##### Invalid Invite Code
+This error occurs if the invite code provided by the user does not match a current game.
+```http
+HTTP/1.1 401 Unauthorized
+```
+```js
+{
+  "error": "That invite code is invalid"
+}
+```
+
+##### Game Is Full
+This error occurs if the invite code provided for the user matches a game that does not have room for additional players.
+```http
+HTTP/1.1 401 Unauthorized
+```
+```js
+{
+  "error": "That game is already full"
 }
 ```
 

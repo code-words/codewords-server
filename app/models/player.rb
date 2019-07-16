@@ -6,4 +6,5 @@ class Player < ApplicationRecord
   enum team: [:red, :blue]
 
   validates_presence_of :team, :role
+  has_secure_token
 end

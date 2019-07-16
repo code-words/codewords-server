@@ -7,4 +7,8 @@ class Game < ApplicationRecord
 
   has_many :hints
   has_many :guesses
+
+  has_secure_token :game_key
+  has_secure_token :intel_key
+  has_secure_token :invite_code
 end

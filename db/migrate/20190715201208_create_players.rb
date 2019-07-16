@@ -5,6 +5,9 @@ class CreatePlayers < ActiveRecord::Migration[5.2]
       t.references :game, foreign_key: true
       t.integer :role
       t.integer :team
+      t.string :token, null: false
+
+      t.index :token, unique: true
 
       t.timestamps
     end

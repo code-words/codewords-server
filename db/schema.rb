@@ -34,8 +34,14 @@ ActiveRecord::Schema.define(version: 2019_07_15_202144) do
   end
 
   create_table "games", force: :cascade do |t|
+    t.string "game_key", null: false
+    t.string "intel_key", null: false
+    t.string "invite_code", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["game_key"], name: "index_games_on_game_key", unique: true
+    t.index ["intel_key"], name: "index_games_on_intel_key", unique: true
+    t.index ["invite_code"], name: "index_games_on_invite_code", unique: true
   end
 
   create_table "guesses", force: :cascade do |t|
@@ -63,9 +69,11 @@ ActiveRecord::Schema.define(version: 2019_07_15_202144) do
     t.bigint "game_id"
     t.integer "role"
     t.integer "team"
+    t.string "token", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["game_id"], name: "index_players_on_game_id"
+    t.index ["token"], name: "index_players_on_token", unique: true
     t.index ["user_id"], name: "index_players_on_user_id"
   end
 

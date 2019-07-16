@@ -20,12 +20,14 @@ This is the server side of the Codewords game. It manages game state and handles
 
 [![Database Schema Diagram](schema.png)](https://dbdiagram.io/d/5d28ffa3ced98361d6dc9ccb)
 
-### API Endpoints
+## API Endpoints
 
-- [Create/Initiate Game](#create_game)
-- [Join Existing Game](#join_game)
+- [Create/Initiate Game](#create-game)
+- [Join Existing Game](#join-game)
 
-#### Create Game
+---
+
+### Create Game
 
 Request that the server create a new Game instance and attach the requesting user as a Player. Because we are not managing persistent users at this time, this endpoint also creates a User record for the requesting user.
 
@@ -76,7 +78,9 @@ HTTP/1.1 401 Unauthorized
 
 </details>
 
-#### Join Game
+---
+
+### Join Game
 
 Request that the server create a new Player instance for the requesting user and attach it to the Game denoted by the invite code.
 

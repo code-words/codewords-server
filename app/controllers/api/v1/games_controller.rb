@@ -14,6 +14,19 @@ class Api::V1::GamesController < Api::V1::ApiController
       render status: 401, json: {
         error: "You must provide a username"
       }
+  end
+
+  def join
+    if params[:name]
+    else
+      render_error message: "You must provide a username"
     end
   end
+
+  private
+    def render_error status: 401, message: "Unauthorized"
+      render status: status, json: {
+        error: message
+      }
+    end
 end

@@ -71,7 +71,7 @@ RSpec.describe "Games", type: :request do
 
     it "prevents overfilling a game" do
       post create_game_path, params: {name: "Archer"}, headers: {'Accept' => 'application/json'}
-      invite_code = "some-nonsense"
+      invite_code = JSON.parse(response.body, symbolize_names: true)[:invite_code]
       post join_game_path(invite_code), params: {name: "Lana"}, headers: {'Accept' => 'application/json'}
       post join_game_path(invite_code), params: {name: "Cyril"}, headers: {'Accept' => 'application/json'}
       post join_game_path(invite_code), params: {name: "Cheryl"}, headers: {'Accept' => 'application/json'}

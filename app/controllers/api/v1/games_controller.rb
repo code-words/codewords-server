@@ -11,9 +11,8 @@ class Api::V1::GamesController < Api::V1::ApiController
         token: player.token
       }
     elsif
-      render status: 401, json: {
-        error: "You must provide a username"
-      }
+      render_error message: "You must provide a username"
+    end
   end
 
   def join

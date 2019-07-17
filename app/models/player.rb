@@ -6,4 +6,8 @@ class Player < ApplicationRecord
   enum team: [:red, :blue]
 
   has_secure_token
+
+  def name
+    user.name
+  end
 end

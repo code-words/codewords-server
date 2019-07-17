@@ -1,6 +1,11 @@
 class GameDataChannel < ApplicationCable::Channel
   def subscribed
-    stream_from "game_data_channel"
+    player = Player.includes(:game, :user).find_by(token: params[:token])
+    if player
+      stream_from "game_#{player.game.game_key}"
+    else
+      reject
+    end
   end
 
   def unsubscribed

@@ -4,5 +4,5 @@ Rails.application.routes.draw do
     post '/games/:invite_code/players', to: 'games#join', as: :join_game
   end
 
-  mount ActionCable.server => '/cable/:token'
+  # mount ActionCable.server => '/cable/:token'
 end

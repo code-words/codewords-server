@@ -8,9 +8,11 @@ module ApplicationCable
 
     private
       def find_player
-        if player = Player.find_by(token: request.params[:token])
+        if player = Player.find_by(token: request.path_parameters[:token])
           player
         else
+          puts "Connection will be rejected for"
+          p player
           reject_unauthorized_connection
         end
       end

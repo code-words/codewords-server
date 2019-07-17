@@ -5,7 +5,7 @@ describe ApplicationCable::Connection, type: :channel do
     user = User.create(name: "Archer")
     game = Game.create()
     player = game.players.create(user: user)
-    connect '/cable', params: { token: player.token }
+    connect "/cable", params: { token: player.token }
     expect(connection.current_player).to eq(player)
   end
 

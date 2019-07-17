@@ -13,3 +13,11 @@
  *= require_tree .
  *= require_self
  */
+
+#game {
+  background-color: #FFDDFF;
+}
+
+#intel {
+  background-color: #FFFFDD;
+}

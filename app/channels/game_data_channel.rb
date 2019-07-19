@@ -26,8 +26,9 @@ class GameDataChannel < ApplicationCable::Channel
       broadcast_message = {
         type: "player-joined",
         data: {
-          message: "#{@player.name} has joined!",
-          roster: compose_players(@player.game)
+          id: @player.id,
+          name: @player.name,
+          playerRoster: compose_players(@player.game)
         }
       }
       ActionCable.server.broadcast "game_#{@player.game.game_key}", message: broadcast_message.to_json

@@ -4,11 +4,24 @@ RSpec.describe "Intel", type: :request do
   describe "GET /api/v1/intel" do
     describe "success" do
       it "returns the card metadata for the game" do
-        user = User.create(name: "Archer")
+        require './db/seeds/cards'
+        users = [User.create(name: "Archer")]
+        users << User.create(name: "Lana")
+        users << User.create(name: "Cyril")
+        users << User.create(name: "Cheryl")
         game = Game.create()
+        game.users << users
+        players = game.players
+
+        oldLogger = ActiveRecord::Base.logger
+        ActiveRecord::Base.logger = Logger.new(STDOUT) if defined?(ActiveRecord::Base)
         game.establish!
-        player = game.players.create(user: user, role: :intel)
-        get get_intel_path, params: {token: player.token}, headers: {'Accept' => 'application/json'}
+        ActiveRecord::Base.logger = oldLogger
+
+        players[0].role = :intel
+        players[0].save
+
+        get get_intel_path, params: {token: players[0].token}, headers: {'Accept' => 'application/json'}
 
         expect(response).to have_http_status(:ok)
 

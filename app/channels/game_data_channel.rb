@@ -5,6 +5,7 @@ class GameDataChannel < ApplicationCable::Channel
     # ActionCable doesn't give access to params[] here if mounted in application.rb
     @player = Player.includes(:game, :user).find_by(token: connection.current_player.token)
     stream_from "game_#{@player.game.game_key}"
+    ensure_confirmation_sent
   end
 
   def unsubscribed

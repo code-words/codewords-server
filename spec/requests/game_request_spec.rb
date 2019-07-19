@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "Games", type: :request do
-  describe "POST /games" do
+  describe "POST /api/v1/games" do
     it "creates a game" do
       post create_game_path, params: {name: "Archer"}, headers: {'Accept' => 'application/json'}
       expect(response).to have_http_status(:created)
@@ -22,7 +22,7 @@ RSpec.describe "Games", type: :request do
     end
   end
 
-  describe "POST /games/:invite_code/players" do
+  describe "POST /api/v1/games/:invite_code/players" do
     it "adds the new player" do
       post create_game_path, params: {name: "Archer"}, headers: {'Accept' => 'application/json'}
       invite_code = JSON.parse(response.body, symbolize_names: true)[:invite_code]

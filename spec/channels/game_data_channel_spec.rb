@@ -5,8 +5,8 @@ describe GameDataChannel, type: :channel do
   let(:game){Game.create()}
 
   before do
-    player = game.players.create(user: user)
-    stub_connection current_player: player
+    @player = game.players.create(user: user)
+    stub_connection current_player: @player
   end
 
   it 'subscribes to a room' do
@@ -14,5 +14,16 @@ describe GameDataChannel, type: :channel do
 
     expect(subscription).to be_confirmed
     expect(subscription).to have_stream_for("game_#{game.game_key}")
+  end
+
+  it 'broadcasts joining player info' do
+    expect{ subscribe }.to have_broadcasted_to("game_#{game.game_key}")
+      .with{ |data|
+        message = JSON.parse(data[:message], symbolize_names: true)
+        expect(message[:type]).to eq("player-joined")
+        payload = message[:data]
+        expect(payload[:id]).to eq(@player.id)
+        expect(payload[:name]).to eq(@player.name)
+      }
   end
 end

@@ -24,6 +24,7 @@ RSpec.describe "Intel", type: :request do
     describe "errors" do
       it "requires a token" do
         get get_intel_path, headers: {'Accept' => 'application/json'}
+
         expect(response).to have_http_status(:unauthorized)
 
         data = JSON.parse(response.body, symbolize_names: true)
@@ -37,6 +38,8 @@ RSpec.describe "Intel", type: :request do
         get get_intel_path, params: {token: "nonsense"}, headers: {'Accept' => 'application/json'}
 
         expect(response).to have_http_status(:unauthorized)
+
+        data = JSON.parse(response.body, symbolize_names: true)
         expect(data[:error]).to eq("Unable to find a user with that token")
       end
     end
@@ -48,6 +51,8 @@ RSpec.describe "Intel", type: :request do
       get get_intel_path, params: {token: player.token}, headers: {'Accept' => 'application/json'}
 
       expect(response).to have_http_status(:unauthorized)
+
+      data = JSON.parse(response.body, symbolize_names: true)
       expect(data[:error]).to eq("You are not authorized for this game's secret intel")
     end
   end

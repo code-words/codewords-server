@@ -32,28 +32,42 @@ describe GameDataChannel, type: :channel do
       }
   end
 
+  it 'does not broadcast game start until all players are in' do
+    expect{ subscribe }.to have_broadcasted_to("game_#{game.game_key}").once
+
+    player2 = Player.create(game: game, user: User.create(name: "Lana"))
+    stub_connection current_player: player2
+    expect{ subscribe }.to have_broadcasted_to("game_#{game.game_key}").once
+
+    player3 = Player.create(game: game, user: User.create(name: "Cyril"))
+    stub_connection current_player: player3
+
+    expect{ subscribe }.to have_broadcasted_to("game_#{game.game_key}").once
+  end
+
   it 'broadcasts game start info once all players are in' do
     subscribe
 
-    user2 = game.users << User.create(name: "Lana")
-    stub_connection current_player: user2.players.first
+    player2 = Player.create(game: game, user: User.create(name: "Lana"))
+    stub_connection current_player: player2
     subscribe
 
-    user3 = game.users << User.create(name: "Cyril")
-    stub_connection current_player: user3.players.first
+    player3 = Player.create(game: game, user: User.create(name: "Cyril"))
+    stub_connection current_player: player3
     subscribe
 
-    user4 = game.users << User.create(name: "Cheryl")
-    stub_connection current_player: user4.players.first
+    player4 = Player.create(game: game, user: User.create(name: "Cheryl"))
+    stub_connection current_player: player4
 
-    expect{ subscribe }.to have_broadcasted_to("game_#{game.game_key}")
-      .with{ |data|
+    expect{ subscribe }.to have_broadcasted_to("game_#{game.game_key}").twice &&
+      have_broadcasted_to("game_#{game.game_key}").once.with{ |data|
         message = JSON.parse(data[:message], symbolize_names: true)
         unless message[:type] == "player-joined"
           expect(message[:type]).to eq("game-start")
 
           payload = message[:data]
           expect(payload).to have_key(:cards)
+          expect(payload[:cards].count).to eq(25)
 
           payload[:cards].each do |card|
             expect(card).to have_key(:id)
@@ -61,6 +75,7 @@ describe GameDataChannel, type: :channel do
           end
 
           expect(payload).to have_key(:players)
+          expect(payload[:players].count).to eq(4)
 
           payload[:players].each do |player|
             expect(player).to have_key(:id)

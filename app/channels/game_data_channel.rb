@@ -72,4 +72,8 @@ class GameDataChannel < ApplicationCable::Channel
         }
         ActionCable.server.broadcast "game_#{@player.game.game_key}", message: broadcast_message.to_json
     end
+
+    def all_players_in?(game)
+      game.player_count == game.players.count{|p| p.subscribed?}
+    end
 end

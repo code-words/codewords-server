@@ -306,8 +306,8 @@ This message is broadcast to the game channel whenever a player joins the game. 
 
 <div class="ws-doc-table">
 
-|Key                |Description|
-|:---:              |:--- |
+|key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|Description|
+|:---               |:--- |
 |`type`             |The type of message being broadcast.|
 |`data`             |The data payload of the message.|
 |`data.id`          |The unique id of the player who joined.|
@@ -352,7 +352,7 @@ This message is broadcast to the game channel once the final player has joined t
 ```
 <div class="ws-doc-table">
 
-|key                   |description|
+|key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|description|
 |:---                  |:--- |
 |`type`                |The type of message being broadcast.|
 |`data`                |The data payload of the message.|
@@ -367,8 +367,3 @@ This message is broadcast to the game channel once the final player has joined t
 |`data.firstTeam`      |The team that will play first: "red" or "blue".|
 
 </div>
-<style type="text/css">
-.ws-doc-table table th {
-  min-width: 250px;
-}
-</style>

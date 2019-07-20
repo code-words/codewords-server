@@ -58,6 +58,12 @@ At this point, we have everything we need for our Rails environment. If you wish
 - [Join Existing Game](#join-game)
 - [Get Intel Data](#get-intel)
 
+## Websockets Message Events
+
+|From Server|From Client|
+|:---:|:---:|
+|[Player Joined](#player-joined)|
+
 ---
 
 ### Create Game
@@ -271,3 +277,47 @@ HTTP/1.1 401 Unauthorized
 ```
 
 </details>
+
+---
+
+### Player Joined
+
+This message is broadcast to the game channel whenever a player joins the game. It contains the name and ID of the player who joined, as well as a roster of all players currently in the game.
+
+##### Payload
+
+```js
+{
+  type: "player-joined",
+  data: {
+    id: id,
+    name: "name",
+    playerRoster: [
+      {
+        id: id,
+        name: "name"
+      },
+      ...
+    ]
+  }
+}
+```
+
+<div class="ws-doc-table">
+
+|Key                |Description|
+|:---:              |:--- |
+|`type`             |The type of message being broadcast.|
+|`data`             |The data payload of the message.|
+|`data.id`          |The unique id of the player who joined.|
+|`data.name`        |The name of the player who joined.|
+|`data.playerRoster`|A collection of all players currently in the game. Each is an object with an id and name.|
+|`-->player.id`     |The unique id of the given player.|
+|`-->player.name`   |The name of the given player.|
+
+</div>
+<style type="text/css">
+.ws-doc-table table th {
+  min-width: 250px;
+}
+</style>

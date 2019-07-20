@@ -10,6 +10,38 @@ This is the server side of the Codewords game. It manages game state and handles
 
 ### Setup
 
+<details><summary>Need to set up a Ruby environment? MacOS instructions within.</summary>
+
+_Note: Depending on your existing setup, you may be able to skip one or more of the steps below. If you're not sure whether you have something installed or not, go ahead and run the respective command, and the command-line tools we're using will let you know that you're good to go._
+First, we'll install a Ruby environment manager. [rbenv](https://github.com/rbenv/rbenv) gives you very straightforward tools to manage which version of Ruby you use for a particular project.
+- `brew install rbenv`
+- `rbenv init`
+  - This will instruct you to add content to your `~/.bash_profile`. Do so.
+- `source ~/.bash_profile`
+- `curl -fsSL https://github.com/rbenv/rbenv-installer/raw/master/bin/rbenv-doctor | bash`
+  - The above command should report green across the board. If you get anything else, you'll need to search for assistance on the internet.
+
+Now that rbenv is installed, we need to install Ruby. This project uses Ruby 2.6.3, so we'll start there.
+- `rbenv install 2.6.3`
+  - If you have used `rbenv` to install Ruby before, you will need to set the correct Ruby version for this project.
+  - Once you have cloned down this repository, `cd` into the project root.
+  - Run `rbenv local 2.6.3`. (This step can be skipped if `rbenv global` reports you're already using `2.6.3`)
+  - With Ruby, the package manager we use is called [Bundler](https://github.com/bundler/bundler). Let's be certain you have the right version.
+  - Run `gem install bundler -v 2.0.2`
+
+Next, we'll install the [PostgreSQL](https://formulae.brew.sh/formula/postgresql) database.
+- `brew install postgresql`
+
+Finally, we'll install [Redis](https://formulae.brew.sh/formula/redis), which is used to manage our Websockets broadcasts
+- `brew install redis`
+- redis runs as a service in the background. It uses very little resources, so we'll go ahead and start it now.
+- `brew services start redis`
+- It will need to be active anytime we're running the server, however you can stop it whenever you don't need it with `brew services stop redis`
+
+At this point, we have everything we need for our Rails environment. If you wish, you can also globally install Rails with `gem install rails -v 5.2.3` however Bundler will ensure you have what you need for this project.
+
+</details>
+
 01. Clone this repository and run `bundle install`.
 02. Prepare database with `rails db:create`
 03. Migrate with `rails db:migrate`

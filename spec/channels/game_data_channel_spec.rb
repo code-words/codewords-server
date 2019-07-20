@@ -4,10 +4,6 @@ describe GameDataChannel, type: :channel do
   let(:user){User.create(name: "Archer")}
   let(:game){Game.create}
 
-  before(:all) do
-    require './db/seeds/cards'
-  end
-
   before(:each) do
     @player = game.players.create(user: user)
     stub_connection current_player: @player

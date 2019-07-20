@@ -4,7 +4,6 @@ RSpec.describe "Intel", type: :request do
   describe "GET /api/v1/intel" do
     describe "success" do
       it "returns the card metadata for the game" do
-        require './db/seeds/cards'
         game = Game.create
         game.users << User.create(name: "Archer")
         game.users << User.create(name: "Lana")

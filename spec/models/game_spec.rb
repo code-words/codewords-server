@@ -23,10 +23,6 @@ RSpec.describe Game, type: :model do
     let(:player3){ User.create(name: "Cyril")}
     let(:player4){ User.create(name: "Cheryl")}
 
-    before(:all) do
-      require './db/seeds/cards'
-    end
-
     describe '.username_taken?' do
       it 'returns false if the username is not yet taken' do
         game.users += [player1, player2, player3]

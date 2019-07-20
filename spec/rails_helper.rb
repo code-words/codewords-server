@@ -96,3 +96,11 @@ Shoulda::Matchers.configure do |config|
     with.library :rails
   end
 end
+
+require 'database_cleaner'
+DatabaseCleaner.strategy = :truncation
+require './db/seeds/cards'
+
+RSpec.configure do |config|
+  config.after(:suite){ DatabaseCleaner.clean }
+end

@@ -12,10 +12,13 @@ class Game < ApplicationRecord
   has_secure_token :intel_key
   has_secure_token :invite_code
 
-  accepts_nested_attributes_for :game_cards
+  accepts_nested_attributes_for :game_cards, :players
+
+  default_scope { includes(:players, :game_cards) }
 
   def establish!
     prepare_cards
+    prepare_players
   end
 
   def username_taken? name
@@ -41,7 +44,7 @@ class Game < ApplicationRecord
       amt = blue_first? ? 9 : 8
       @_blue_cards ||= @selected_cards.sample(amt).map do |card|
         @selected_cards.delete(card)
-        self.game_cards.new(card: card, chosen: false, category: :blue)
+        GameCard.new(game: self, card: card, chosen: false, category: :blue)
       end
     end
 
@@ -49,20 +52,21 @@ class Game < ApplicationRecord
       amt = blue_first? ? 8 : 9
       @_red_cards ||= @selected_cards.sample(amt).map do |card|
         @selected_cards.delete(card)
-        self.game_cards.new(card: card, chosen: false, category: :red)
+        GameCard.new(game: self, card: card, chosen: false, category: :red)
       end
     end
 
     def assassin_card
       @_assassin_card ||= begin
-        card = @selected_cards.sample
-        [self.game_cards.new(card: card, chosen: false, category: :assassin)]
+        card = @selected_cards.sample(1)[0]
+        @selected_cards.delete(card)
+        [GameCard.new(game: self, card: card, chosen: false, category: :assassin)]
       end
     end
 
     def bystander_cards
       @_bystander_cards ||= @selected_cards.map do |card|
-        self.game_cards.new(card: card, chosen: false, category: :bystander)
+        GameCard.new(game: self, card: card, chosen: false, category: :bystander)
       end
     end
 
@@ -77,5 +81,23 @@ class Game < ApplicationRecord
       end
 
       GameCard.import prepared_cards
+    end
+
+    def prepare_players
+      all_players = players.to_a.shuffle
+      red_players = all_players.sample(2)
+      blue_players = all_players - red_players
+
+      red_players.each.with_index do |player, i|
+        player.role = (i == 0) ? :intel : :spy
+        player.team = :red
+      end
+
+      blue_players.each.with_index do |player, i|
+        player.role = (i == 0) ? :intel : :spy
+        player.team = :blue
+      end
+
+      self.save
     end
 end

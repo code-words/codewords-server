@@ -10,6 +10,12 @@ class GameCard < ApplicationRecord
   validates :chosen, inclusion: {in: [true, false]}
   validates_numericality_of :address
 
+  default_scope { includes(:card) }
+
+  def word
+    card.word
+  end
+
   private
     def set_chosen_false
       self.chosen = false

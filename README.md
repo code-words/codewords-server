@@ -56,6 +56,7 @@ At this point, we have everything we need for our Rails environment. If you wish
 
 - [Create/Initiate Game](#create-game)
 - [Join Existing Game](#join-game)
+- [Get Intel Data](#get-intel)
 
 ---
 
@@ -190,6 +191,82 @@ HTTP/1.1 401 Unauthorized
 ```js
 {
   "error": "That game is already full"
+}
+```
+
+</details>
+
+---
+
+### Get Intel
+
+Request the Intel data for a game, allowing the player to see which cards belong to which team, which are bystanders, and which is the assassin. This endpoint requires a valid token belonging to a player with the intel role.
+
+##### Request
+```http
+GET /api/v1/intel
+```
+```js
+{
+  "token": "uuxHQc7djqQuzWgJxAp5r1vy"
+}
+```
+|key|description|
+|:---:|:--- |
+|`token`| A valid token belonging to a Player with the Intel role.|
+
+##### Successful Response
+```http
+HTTP/1.1 200 OK
+```
+```js
+{
+  "cards": [
+    {
+      "id": 0, // int card id
+      "type": "red" // red, blue, bystander, or assassin
+    }, // ... one for each card
+  ]
+}
+```
+|key|description|
+|:---:|:--- |
+|`cards`|A collection of cards which are part of the game.|
+|`id`|The unique identifier for the card.|
+|`type`|The type of card to render in the UI: "red", "blue", "bystander", or "assassin".|
+
+<details><summary>Failed Responses</summary>
+
+##### Token Omitted
+This error occurs if the body of the request does not contain a `token`, or if the `token` is empty.
+```http
+HTTP/1.1 401 Unauthorized
+```
+```js
+{
+  "error": "You must provide your access token"
+}
+```
+
+##### Invalid Token Code
+This error occurs if the provided token does not match a player.
+```http
+HTTP/1.1 401 Unauthorized
+```
+```js
+{
+  "error": "Unable to find a user with that token"
+}
+```
+
+##### Player Does Not Have Intel Role
+This error occurs if the token matches a player who does not have the Intel role for the game.
+```http
+HTTP/1.1 401 Unauthorized
+```
+```js
+{
+  "error": "You are not authorized for this game's secret intel"
 }
 ```
 

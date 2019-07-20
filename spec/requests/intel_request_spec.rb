@@ -12,7 +12,6 @@ RSpec.describe "Intel", type: :request do
         game.users << User.create(name: "Cheryl")
         players = game.players
 
-        oldLogger = ActiveRecord::Base.logger
         game.establish!
 
         players[0].role = :intel

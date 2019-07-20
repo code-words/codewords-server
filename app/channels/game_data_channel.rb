@@ -13,6 +13,15 @@ class GameDataChannel < ApplicationCable::Channel
   end
 
   private
+    def compose_roster(game)
+      game.players.map do |p|
+        {
+          id: p.id,
+          name: p.name
+        }
+      end
+    end
+
     def compose_players(game)
       game.players.map do |player|
         {
@@ -28,7 +37,7 @@ class GameDataChannel < ApplicationCable::Channel
         data: {
           id: @player.id,
           name: @player.name,
-          playerRoster: compose_players(@player.game)
+          playerRoster: compose_roster(@player.game)
         }
       }
       ActionCable.server.broadcast "game_#{@player.game.game_key}", message: broadcast_message.to_json

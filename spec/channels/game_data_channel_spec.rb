@@ -59,11 +59,17 @@ describe GameDataChannel, type: :channel do
     player4 = Player.create(game: game, user: User.create(name: "Cheryl"))
     stub_connection current_player: player4
 
-    expect{ subscribe }.to have_broadcasted_to("game_#{game.game_key}").twice &&
-      have_broadcasted_to("game_#{game.game_key}").once.with{ |data|
+    # track number of times game-setup broadcast
+    game_setup_count = 0
+
+    expect{ subscribe }.to have_broadcasted_to("game_#{game.game_key}")
+      .twice # once with player-joined, once with game-setup
+      .with{ |data|
         message = JSON.parse(data[:message], symbolize_names: true)
         unless message[:type] == "player-joined"
-          expect(message[:type]).to eq("game-start")
+          expect(message[:type]).to eq("game-setup")
+          # increment count of game-setup messages
+          game_setup_count += 1
 
           payload = message[:data]
           expect(payload).to have_key(:cards)
@@ -85,7 +91,12 @@ describe GameDataChannel, type: :channel do
           end
 
           expect(payload).to have_key(:firstTeam)
+        else
+          # player-joined message should happen once, so allow that to pass
+          expect(message[:type]).to eq("player-joined")
         end
       }
+    # game-setup should have incremented once in the two broadcasts above
+    expect(game_setup_count).to eq(1)
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_20_000700) do
+ActiveRecord::Schema.define(version: 2019_07_20_171903) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,6 +39,7 @@ ActiveRecord::Schema.define(version: 2019_07_20_000700) do
     t.string "invite_code", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "player_count", default: 4
     t.index ["game_key"], name: "index_games_on_game_key", unique: true
     t.index ["intel_key"], name: "index_games_on_intel_key", unique: true
     t.index ["invite_code"], name: "index_games_on_invite_code", unique: true
@@ -72,6 +73,7 @@ ActiveRecord::Schema.define(version: 2019_07_20_000700) do
     t.string "token", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "subscribed", default: false
     t.index ["game_id"], name: "index_players_on_game_id"
     t.index ["token"], name: "index_players_on_token", unique: true
     t.index ["user_id"], name: "index_players_on_user_id"

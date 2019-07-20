@@ -65,7 +65,18 @@ RSpec.describe Game, type: :model do
         game.establish!
         cards = game.game_cards.to_a
 
+        cards.each do |card|
+          expect(card).to be_instance_of(GameCard)
+          expect(card.card).to be_instance_of(Card)
+        end
+
         expect(cards.count).to eq(25)
+
+        red = cards.select{|card| card.red?}
+        blue = cards.select{|card| card.blue?}
+        expect(red.count).to eq(9) | eq(8)
+        expect(blue.count).to eq(9) | eq(8)
+        expect(red.count).to_not eq(blue.count)
 
         bystanders = cards.select{|card| card.bystander?}
         expect(bystanders.count).to eq(7)
@@ -78,6 +89,11 @@ RSpec.describe Game, type: :model do
         game.users += [player1, player2, player3, player4]
         game.establish!
         players = game.players.to_a
+
+        players.each do |player|
+          expect(player).to be_instance_of(Player)
+          expect(player.user).to be_instance_of(User)
+        end
 
         red_players = players.select{|player| player.red?}
         blue_players = players.select{|player| player.blue?}

@@ -1,5 +1,5 @@
 class GameDataChannel < ApplicationCable::Channel
-  on_subscribe :welcome_player
+  on_subscribe :welcome_player, :start_game
 
   def subscribed
     # ActionCable doesn't give access to params[] here if mounted in application.rb
@@ -32,5 +32,22 @@ class GameDataChannel < ApplicationCable::Channel
         }
       }
       ActionCable.server.broadcast "game_#{@player.game.game_key}", message: broadcast_message.to_json
+    end
+
+    def start_game
+      game = @player.game
+      game.players.load
+      if all_players_in?
+        game.establish!
+
+        broadcast_message = {
+          type: "game-setup",
+          data: {
+            cards: compose_cards(game),
+            players: compose_players(game),
+            firstTeam: game.blue_first? ? :blue : :red
+          }
+        }
+        ActionCable.server.broadcast "game_#{@player.game.game_key}", message: broadcast_message.to_json
     end
 end

@@ -59,7 +59,7 @@ class GameDataChannel < ApplicationCable::Channel
     def start_game
       game = @player.game
       game.players.load
-      if all_players_in?
+      if all_players_in?(game)
         game.establish!
 
         broadcast_message = {
@@ -71,6 +71,7 @@ class GameDataChannel < ApplicationCable::Channel
           }
         }
         ActionCable.server.broadcast "game_#{@player.game.game_key}", message: broadcast_message.to_json
+      end
     end
 
     def all_players_in?(game)

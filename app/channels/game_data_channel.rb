@@ -58,7 +58,7 @@ class GameDataChannel < ApplicationCable::Channel
 
     def start_game
       game = @player.game
-      game.players.load
+      game.reload
       if all_players_in?(game)
         game.establish!
 

@@ -30,6 +30,7 @@ gem 'redis', '~> 4.0'
 # gem 'capistrano-rails', group: :development
 
 # Reduces boot times through caching; required in config/boot.rb
+gem 'activerecord-import'
 gem 'bootsnap', '>= 1.1.0', require: false
 gem 'travis'
 gem 'rack-cors'

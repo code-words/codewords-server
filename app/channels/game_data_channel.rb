@@ -23,10 +23,22 @@ class GameDataChannel < ApplicationCable::Channel
     end
 
     def compose_players(game)
-      game.players.map do |player|
+      game.players.map do |p|
         {
-          id: player.id,
-          name: player.name
+          id: p.id,
+          name: p.name,
+          isBlueTeam: p.blue?,
+          isIntel: p.intel?
+        }
+      end
+    end
+
+    def compose_cards(game)
+      cards = game.game_cards.sort_by &:address
+      cards.map do |c|
+        {
+          id: c.id,
+          word: c.word
         }
       end
     end

@@ -220,7 +220,7 @@ GET /api/v1/intel
 ```
 |key|description|
 |:---:|:--- |
-|`token`| A valid token belonging to a Player with the Intel role.|
+|`token`|String: A valid token belonging to a Player with the Intel role.|
 
 ##### Successful Response
 ```http
@@ -230,17 +230,17 @@ HTTP/1.1 200 OK
 {
   "cards": [
     {
-      "id": 0, // int card id
-      "type": "red" // red, blue, bystander, or assassin
-    }, // ... one for each card
+      "id": 0,
+      "type": "red"
+    }, ...
   ]
 }
 ```
 |key|description|
 |:---:|:--- |
-|`cards`|A collection of cards which are part of the game.|
-|`id`|The unique identifier for the card.|
-|`type`|The type of card to render in the UI: "red", "blue", "bystander", or "assassin".|
+|`cards`|Array: A collection of `card` objects which are part of the game.|
+|`-->card.id`|Integer: The unique identifier for the card.|
+|`-->card.type`|String:The type of card to render in the UI: "red", "blue", "bystander", or "assassin".|
 
 <details><summary>Failed Responses</summary>
 
@@ -291,11 +291,11 @@ This message is broadcast to the game channel whenever a player joins the game. 
 {
   type: "player-joined",
   data: {
-    id: id,
+    id: 0,
     name: "name",
     playerRoster: [
       {
-        id: id,
+        id: 0,
         name: "name"
       },
       ...
@@ -308,13 +308,13 @@ This message is broadcast to the game channel whenever a player joins the game. 
 
 |key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|Description|
 |:---               |:--- |
-|`type`             |The type of message being broadcast.|
-|`data`             |The data payload of the message.|
-|`data.id`          |The unique id of the player who joined.|
-|`data.name`        |The name of the player who joined.|
-|`data.playerRoster`|A collection of all players currently in the game. Each is an object with an id and name.|
-|`-->player.id`     |The unique id of the given player.|
-|`-->player.name`   |The name of the given player.|
+|`type`             |String: The type of message being broadcast.|
+|`data`             |Object: The data payload of the message.|
+|`data.id`          |Integer: The unique id of the player who joined.|
+|`data.name`        |String: The name of the player who joined.|
+|`data.playerRoster`|Array: A collection of `player` objects for all players currently in the game.|
+|`-->player.id`     |Integer: The unique id of the given player.|
+|`-->player.name`   |String: The name of the given player.|
 
 </div>
 
@@ -328,25 +328,25 @@ This message is broadcast to the game channel once the final player has joined t
 
 ```js
 {
-  type: 'game-setup',
+  type: "game-setup",
   data: {
     cards: [
       {
-        id: id,
-        word: 'someword'
+        id: 0,
+        word: "someword"
       },
       ...
     ],
     players: [
       {
-        id: id,
+        id: 0,
         name: "name",
-        isBlueTeam: true, // boolean
-        isIntel: true // boolean
+        isBlueTeam: true,
+        isIntel: true
       },
       ...
     ],
-    firstTeam: "red" // red/blue
+    firstTeam: "red"
   }
 }
 ```
@@ -354,16 +354,16 @@ This message is broadcast to the game channel once the final player has joined t
 
 |key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|description|
 |:---                  |:--- |
-|`type`                |The type of message being broadcast.|
-|`data`                |The data payload of the message.|
-|`data.cards`          |An ordered collection of cards that will be used in the game. The order of these cards goes onto the board left-to-right, top-to-bottom.|
-|`-->card.id`          |The unique id for the given card.|
-|`-->card.word`        |The word to display on a given card.|
-|`data.players`        |A collection of players in the game.|
-|`-->player.id`        |The unique id for the given player.|
-|`-->player.name`      |The name for the given player.|
+|`type`                |String: The type of message being broadcast.|
+|`data`                |Object: The data payload of the message.|
+|`data.cards`          |Array: An **ordered** collection of `card` objects that will be used in the game. The order of these cards goes onto the board left-to-right, top-to-bottom.|
+|`-->card.id`          |Integer: The unique id for the given card.|
+|`-->card.word`        |String: The word to display on a given card.|
+|`data.players`        |Array: A collection of `player` objects for all players in the game.|
+|`-->player.id`        |Integer: The unique id for the given player.|
+|`-->player.name`      |String: The name for the given player.|
 |`-->player.isBlueTeam`|Boolean: `true` if the player is on the blue team, `false` if they're on the red team.|
 |`-->player.isIntel`   |Boolean: `true` if the player has the Intel role, `false` if they don't.|
-|`data.firstTeam`      |The team that will play first: "red" or "blue".|
+|`data.firstTeam`      |String: The team that will play first: "red" or "blue".|
 
 </div>

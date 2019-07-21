@@ -7,7 +7,8 @@ class Api::V1::GamesController < Api::V1::ApiController
       render status: 201, json: {
         game_channel: "game_#{game.game_key}",
         invite_code: game.invite_code,
-        name: user.name,
+        id: player.id,
+        name: player.name,
         token: player.token
       }
     elsif
@@ -29,7 +30,8 @@ class Api::V1::GamesController < Api::V1::ApiController
         player = game.players.create(user: user)
         render status: 200, json: {
           game_channel: "game_#{game.game_key}",
-          name: user.name,
+          id: player.id,
+          name: player.name,
           token: player.token
         }
       end

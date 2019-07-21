@@ -6,11 +6,14 @@ RSpec.describe "Games", type: :request do
       post create_game_path, params: {name: "Archer"}, headers: {'Accept' => 'application/json'}
       expect(response).to have_http_status(:created)
 
+      player = Player.last
+      expect(player.name).to eq("Archer")
+
       data = JSON.parse(response.body, symbolize_names: true)
-      expect(data[:name]).to eq("Archer")
-      expect(data).to have_key(:game_channel)
-      expect(data).to have_key(:invite_code)
-      expect(data).to have_key(:token)
+      expect(data[:id]).to eq(player.id)
+      expect(data[:name]).to eq(player.name)
+      expect(data[:invite_code]).to eq(player.game.invite_code)
+      expect(data[:token]).to eq(player.token)
     end
 
     it "requires a username" do
@@ -30,10 +33,13 @@ RSpec.describe "Games", type: :request do
       post join_game_path(invite_code), params: {name: "Lana"}, headers: {'Accept' => 'application/json'}
       expect(response).to have_http_status(:ok)
 
+      player = Player.last
+      expect(player.name).to eq("Lana")
+
       data = JSON.parse(response.body, symbolize_names: true)
-      expect(data[:name]).to eq("Lana")
-      expect(data).to have_key(:game_channel)
-      expect(data).to have_key(:token)
+      expect(data[:id]).to eq(player.id)
+      expect(data[:name]).to eq(player.name)
+      expect(data[:token]).to eq(player.token)
     end
 
     it "requires a username" do

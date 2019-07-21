@@ -1,0 +1,14 @@
+<main>
+  This is the server application for
+  <a href="http://playcodewords.com">Codewords</a>, an online card game inspired
+  by <a href="https://en.wikipedia.org/wiki/Codenames_(board_game)">Codenames</a>
+  and lovingly built by the following fine people, in no particular order:
+  <ul>
+  <% @developers.shuffle.each do |dev| %>
+    <li>
+      <a href="https://github.com/<%= dev[:github] %>"
+         title="Github user @<%= dev[:github] %>"><%= dev[:name] %></a>
+    </li>
+  <% end %>
+  </ul>
+</main>

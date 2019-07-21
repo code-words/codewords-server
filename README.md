@@ -82,7 +82,7 @@ POST /api/v1/games
 ```
 |key|description|
 |:---:|:--- |
-|`name`|The username that the requesting user would like to use during the game|
+|`name`|String: The username that the requesting user would like to use during the game|
 
 ##### Successful Response
 ```http
@@ -90,18 +90,18 @@ HTTP/1.1 201 Created
 ```
 ```js
 {
-  "game_channel": "game_9aZReVkGAotVahGLS88vEnYw",
   "invite_code": "L6J5suAqTsKUAjEXm5swoEUN",
+  "id": 0,
   "name": "Archer",
   "token": "uuxHQc7djqQuzWgJxAp5r1vy"
 }
 ```
 |key|description|
 |:---:|:--- |
-|`game_channel`|The Websockets channel that players will connect to for game-wide data updates.|
-|`invite_code`|A code which can be shared with other players. They will use this code to join the game.|
-|`name`|A confirmation that the requested name was indeed assigned to the player.|
-|`token`|A token unique to the current player, which can be used to identify them in future requests to the server.|
+|`invite_code`|String: A code which can be shared with other players. They will use this code to join the game.|
+|`id`|Integer: The unique id for the player.|
+|`name`|String: A confirmation that the requested name was indeed assigned to the player.|
+|`token`|String: A token unique to the current player, which can be used to identify them in future requests to the server.|
 
 <details><summary>Failed Responses</summary>
 
@@ -135,8 +135,8 @@ POST /api/v1/games/:invite_code/players
 ```
 |key|description|
 |:---:|:--- |
-|`:invite_code`| (Within URI) The invite code provided by the person inviting the requesting user to their existing game.|
-|`name`|The username that the requesting user would like to use during the game|
+|`:invite_code`|String: (Within URI) The invite code provided by the person inviting the requesting user to their existing game.|
+|`name`|String: The username that the requesting user would like to use during the game|
 
 ##### Successful Response
 ```http
@@ -144,16 +144,16 @@ HTTP/1.1 200 OK
 ```
 ```js
 {
-  "game_channel": "game_9aZReVkGAotVahGLS88vEnYw",
+  "id": 0,
   "name": "Lana",
   "token": "uuxHQc7djqQuzWgJxAp5r1vy"
 }
 ```
 |key|description|
 |:---:|:--- |
-|`game_channel`|The Websockets channel that players will connect to for game-wide data updates.|
-|`name`|A confirmation that the requested name was indeed assigned to the player.|
-|`token`|A token unique to the current player, which can be used to identify them in future requests to the server.|
+|`id`|Integer: The unique id for the player.|
+|`name`|String: A confirmation that the requested name was indeed assigned to the player.|
+|`token`|String: A token unique to the current player, which can be used to identify them in future requests to the server.|
 
 <details><summary>Failed Responses</summary>
 

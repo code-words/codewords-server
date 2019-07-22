@@ -12,7 +12,7 @@ class GameDataChannel < ApplicationCable::Channel
   end
 
   def send_hint(data)
-    if current_player.intel? && current_player.taking_turn?
+    if current_player.game.hint_valid?(hint, current_player)
       hint = current_player.game.hints.create(
         team: current_player.team,
         word: data['hintWord'],
@@ -26,7 +26,9 @@ class GameDataChannel < ApplicationCable::Channel
           relatedCards: hint.num
         }
       }
+
       broadcast_message payload
+      current_player.game.advance!
     else
       illegal_action("#{current_player.name} attempted to submit a hint")
     end

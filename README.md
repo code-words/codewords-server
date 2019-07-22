@@ -60,10 +60,10 @@ At this point, we have everything we need for our Rails environment. If you wish
 
 ## Websockets Message Events
 
-|From Server|From Client|
-|:---:|:---:|
-|[Player Joined](#player-joined)|
-|[Game Started](#game-started)|
+|From Server                    |From Client|
+|:---:                          |:---:|
+|[Player Joined](#player-joined)|     |
+|[Game Started](#game-started)  |     |
 
 ---
 
@@ -80,8 +80,8 @@ POST /api/v1/games
   "name": "Archer"
 }
 ```
-|key|description|
-|:---:|:--- |
+|key   |description|
+|:---: |:--- |
 |`name`|String: The username that the requesting user would like to use during the game|
 
 ##### Successful Response
@@ -96,12 +96,12 @@ HTTP/1.1 201 Created
   "token": "uuxHQc7djqQuzWgJxAp5r1vy"
 }
 ```
-|key|description|
-|:---:|:--- |
+|key          |description|
+|:---:        |:--- |
 |`invite_code`|String: A code which can be shared with other players. They will use this code to join the game.|
-|`id`|Integer: The unique id for the player.|
-|`name`|String: A confirmation that the requested name was indeed assigned to the player.|
-|`token`|String: A token unique to the current player, which can be used to identify them in future requests to the server.|
+|`id`         |Integer: The unique id for the player.|
+|`name`       |String: A confirmation that the requested name was indeed assigned to the player.|
+|`token`      |String: A token unique to the current player, which can be used to identify them in future requests to the server.|
 
 <details><summary>Failed Responses</summary>
 
@@ -133,10 +133,10 @@ POST /api/v1/games/:invite_code/players
   "name": "Lana"
 }
 ```
-|key|description|
-|:---:|:--- |
+|key           |description|
+|:---:         |:--- |
 |`:invite_code`|String: (Within URI) The invite code provided by the person inviting the requesting user to their existing game.|
-|`name`|String: The username that the requesting user would like to use during the game|
+|`name`        |String: The username that the requesting user would like to use during the game|
 
 ##### Successful Response
 ```http
@@ -149,10 +149,10 @@ HTTP/1.1 200 OK
   "token": "uuxHQc7djqQuzWgJxAp5r1vy"
 }
 ```
-|key|description|
-|:---:|:--- |
-|`id`|Integer: The unique id for the player.|
-|`name`|String: A confirmation that the requested name was indeed assigned to the player.|
+|key    |description|
+|:---:  |:--- |
+|`id`   |Integer: The unique id for the player.|
+|`name` |String: A confirmation that the requested name was indeed assigned to the player.|
 |`token`|String: A token unique to the current player, which can be used to identify them in future requests to the server.|
 
 <details><summary>Failed Responses</summary>
@@ -211,15 +211,10 @@ Request the Intel data for a game, allowing the player to see which cards belong
 
 ##### Request
 ```http
-GET /api/v1/intel
+GET /api/v1/intel?token=<player_token>
 ```
-```js
-{
-  "token": "uuxHQc7djqQuzWgJxAp5r1vy"
-}
-```
-|key|description|
-|:---:|:--- |
+|key    |description|
+|:---:  |:--- |
 |`token`|String: A valid token belonging to a Player with the Intel role.|
 
 ##### Successful Response
@@ -231,21 +226,23 @@ HTTP/1.1 200 OK
   "cards": [
     {
       "id": 0,
+      "word": "<card word>",
       "type": "red"
     }, ...
   ]
 }
 ```
-|key|description|
-|:---:|:--- |
-|`cards`|Array: A collection of `card` objects which are part of the game.|
-|`-->card.id`|Integer: The unique identifier for the card.|
-|`-->card.type`|String:The type of card to render in the UI: "red", "blue", "bystander", or "assassin".|
+|key           |description|
+|:---:         |:--- |
+|`cards`       |Array: An **ordered** collection of `card` objects which are part of the game. These cards go onto the board left-to-right, top-to-bottom.|
+|`-->card.id`  |Integer: The unique identifier for the card.|
+|`-->card.word`|String: The word for the card.|
+|`-->card.type`|String: The type of card to render in the UI: "red", "blue", "bystander", or "assassin".|
 
 <details><summary>Failed Responses</summary>
 
 ##### Token Omitted
-This error occurs if the body of the request does not contain a `token`, or if the `token` is empty.
+This error occurs if the querystring of the request does not contain a `token`, or if the `token` is empty.
 ```http
 HTTP/1.1 401 Unauthorized
 ```
@@ -312,7 +309,7 @@ This message is broadcast to the game channel whenever a player joins the game. 
 |`data`             |Object: The data payload of the message.|
 |`data.id`          |Integer: The unique id of the player who joined.|
 |`data.name`        |String: The name of the player who joined.|
-|`data.playerRoster`|Array: A collection of `player` objects for all players currently in the game.|
+|`data.playerRoster`|Array: A collection of `player` objects for all players currently in the game, **ordered by** the time they joined the lobby.|
 |`-->player.id`     |Integer: The unique id of the given player.|
 |`-->player.name`   |String: The name of the given player.|
 
@@ -356,10 +353,10 @@ This message is broadcast to the game channel once the final player has joined t
 |:---                  |:--- |
 |`type`                |String: The type of message being broadcast.|
 |`data`                |Object: The data payload of the message.|
-|`data.cards`          |Array: An **ordered** collection of `card` objects that will be used in the game. The order of these cards goes onto the board left-to-right, top-to-bottom.|
+|`data.cards`          |Array: An **ordered** collection of `card` objects that will be used in the game. These cards go onto the board left-to-right, top-to-bottom.|
 |`-->card.id`          |Integer: The unique id for the given card.|
 |`-->card.word`        |String: The word to display on a given card.|
-|`data.players`        |Array: A collection of `player` objects for all players in the game.|
+|`data.players`        |Array: A collection of `player` objects for all players in the game, **ordered by** the time they joined the lobby.|
 |`-->player.id`        |Integer: The unique id for the given player.|
 |`-->player.name`      |String: The name for the given player.|
 |`-->player.isBlueTeam`|Boolean: `true` if the player is on the blue team, `false` if they're on the red team.|

@@ -26,9 +26,16 @@ describe GameDataChannel, type: :channel do
         expect(payload[:name]).to eq(@player.name)
 
         players = payload[:playerRoster]
+        player_ids = []
         expect(players).to be_instance_of(Array)
-        expect(players[0]).to have_key(:id)
-        expect(players[0]).to have_key(:name)
+        players.each do |player|
+          expect(player).to have_key(:id)
+          expect(player).to have_key(:name)
+          player_ids << player[:id]
+        end
+
+        player_resources = Player.find(player_ids).to_a
+        expect(player_resources).to eq(player_resources.sort_by &:updated_at)
       }
   end
 
@@ -80,15 +87,26 @@ describe GameDataChannel, type: :channel do
             expect(card).to have_key(:word)
           end
 
+          first_card = GameCard.find(payload[:cards].first[:id])
+          expect(first_card.address).to eq(0)
+
+          last_card = GameCard.find(payload[:cards].last[:id])
+          expect(last_card.address).to eq(24)
+
           expect(payload).to have_key(:players)
           expect(payload[:players].count).to eq(4)
 
+          player_ids = []
           payload[:players].each do |player|
             expect(player).to have_key(:id)
             expect(player).to have_key(:name)
             expect(player).to have_key(:isBlueTeam)
             expect(player).to have_key(:isIntel)
+            player_ids << player[:id]
           end
+
+          player_resources = Player.find(player_ids).to_a
+          expect(player_resources).to eq(player_resources.sort_by &:updated_at)
 
           expect(payload).to have_key(:firstTeam)
         else

@@ -2,8 +2,6 @@ require 'rails_helper'
 
 RSpec.describe Game, type: :model do
   describe "Validations" do
-    it { should have_secure_token(:game_key) }
-    it { should have_secure_token(:intel_key) }
     it { should have_secure_token(:invite_code) }
   end
 
@@ -14,6 +12,7 @@ RSpec.describe Game, type: :model do
     it { should have_many(:cards).through(:game_cards) }
     it { should have_many(:hints) }
     it { should have_many(:guesses) }
+    it { should belong_to(:current_player).without_validating_presence }
   end
 
   describe "Instance Methods" do

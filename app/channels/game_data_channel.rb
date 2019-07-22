@@ -3,7 +3,7 @@ class GameDataChannel < ApplicationCable::Channel
 
   def subscribed
     current_player.update(subscribed: true)
-    stream_from "game_#{current_player.game.game_key}"
+    stream_from current_player.game
     ensure_confirmation_sent
   end
 
@@ -134,7 +134,7 @@ class GameDataChannel < ApplicationCable::Channel
 ##     ## ######## ######## ##        ######## ##     ##  ######
 
     def broadcast_message(payload)
-      ActionCable.server.broadcast "game_#{current_player.game.game_key}", message: payload.to_json
+      ActionCable.server.broadcast_to current_player.game, message: payload.to_json
     end
 
     def all_players_in?(game)

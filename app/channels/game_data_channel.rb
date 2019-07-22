@@ -12,12 +12,20 @@ class GameDataChannel < ApplicationCable::Channel
   end
 
   def send_hint(data)
-    if current_player.game.hint_valid?(hint, current_player)
+    game = current_player.game
+    if game.current_player != current_player
+      illegal_action("#{current_player.name} attempted to submit a hint out of turn")
+    elsif !current_player.intel?
+      illegal_action("#{current_player.name} attempted to submit a hint, but doesn't have the Intel role")
+    elsif game.hint_invalid?
+      illegal_action("#{current_player.name} attempted to submit an invalid hint")
+    else
       hint = current_player.game.hints.create(
         team: current_player.team,
         word: data['hintWord'],
         num: data['numCards']
       )
+
       payload = {
         type: 'hint-provided',
         data: {
@@ -28,9 +36,7 @@ class GameDataChannel < ApplicationCable::Channel
       }
 
       broadcast_message payload
-      current_player.game.advance!
-    else
-      illegal_action("#{current_player.name} attempted to submit a hint")
+      game.advance!
     end
   end
 

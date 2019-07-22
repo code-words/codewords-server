@@ -107,7 +107,7 @@ class GameDataChannel < ApplicationCable::Channel
           data: {
             cards: compose_cards(game),
             players: compose_players(game),
-            firstTeam: game.blue_first? ? :blue : :red
+            firstPlayerId: game.current_player.id
           }
         }
         broadcast_message payload

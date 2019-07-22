@@ -17,7 +17,7 @@ class GameDataChannel < ApplicationCable::Channel
       illegal_action("#{current_player.name} attempted to submit a hint out of turn")
     elsif !current_player.intel?
       illegal_action("#{current_player.name} attempted to submit a hint, but doesn't have the Intel role")
-    elsif game.hint_invalid?
+    elsif game.hint_invalid?(data['hintWord'])
       illegal_action("#{current_player.name} attempted to submit an invalid hint")
     else
       hint = current_player.game.hints.create(

@@ -15,7 +15,7 @@ class Game < ApplicationRecord
 
   accepts_nested_attributes_for :game_cards, :players
 
-  default_scope { includes(:players, :game_cards) }
+  default_scope { includes(:players, :game_cards, :current_player) }
 
   def establish!
     prepare_cards
@@ -30,6 +30,10 @@ class Game < ApplicationRecord
 
   def full?
     users.size > 3
+  end
+
+  def hint_invalid?(hint)
+    !hint.match?(/^\w+$/)
   end
 
   private

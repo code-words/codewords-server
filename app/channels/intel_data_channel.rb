@@ -7,6 +7,13 @@ class IntelDataChannel < ApplicationCable::Channel
       reject
     end
   end
+  
+  def hint(data)
+    puts data
+    message = Message.create(body: data['message'])
+    socket = { message: message.body }
+    ChatChannel.broadcast_to('GameDataChannel', socket)
+  end
 
   def unsubscribed
     # Any cleanup needed when channel is unsubscribed

@@ -80,6 +80,12 @@ describe GameDataChannel, type: :channel do
             expect(card).to have_key(:word)
           end
 
+          first_card = GameCard.find(payload[:cards].first[:id])
+          expect(first_card.address).to eq(0)
+
+          last_card = GameCard.find(payload[:cards].last[:id])
+          expect(last_card.address).to eq(24)
+
           expect(payload).to have_key(:players)
           expect(payload[:players].count).to eq(4)
 

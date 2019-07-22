@@ -1,6 +1,7 @@
 class Game < ApplicationRecord
   has_many :players
   has_many :users, through: :players
+  belongs_to: :current_player, class_name: "Player"
 
   has_many :game_cards
   has_many :cards, through: :game_cards
@@ -97,6 +98,8 @@ class Game < ApplicationRecord
         player.role = (i == 0) ? :intel : :spy
         player.team = :blue
       end
+
+      current_player = blue_first? ? blue_players.first : red_players.first
 
       self.save
     end

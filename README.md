@@ -211,15 +211,10 @@ Request the Intel data for a game, allowing the player to see which cards belong
 
 ##### Request
 ```http
-GET /api/v1/intel
+GET /api/v1/intel?token=<player_token>
 ```
-```js
-{
-  "token": "uuxHQc7djqQuzWgJxAp5r1vy"
-}
-```
-|key|description|
-|:---:|:--- |
+|key    |description|
+|:---:  |:--- |
 |`token`|String: A valid token belonging to a Player with the Intel role.|
 
 ##### Successful Response
@@ -231,21 +226,23 @@ HTTP/1.1 200 OK
   "cards": [
     {
       "id": 0,
+      "word": "<card word>",
       "type": "red"
     }, ...
   ]
 }
 ```
-|key|description|
-|:---:|:--- |
-|`cards`|Array: A collection of `card` objects which are part of the game.|
-|`-->card.id`|Integer: The unique identifier for the card.|
-|`-->card.type`|String:The type of card to render in the UI: "red", "blue", "bystander", or "assassin".|
+|key           |description|
+|:---:         |:--- |
+|`cards`       |Array: An **ordered** collection of `card` objects which are part of the game. These cards go onto the board left-to-right, top-to-bottom.|
+|`-->card.id`  |Integer: The unique identifier for the card.|
+|`-->card.word`|String: The word for the card.|
+|`-->card.type`|String: The type of card to render in the UI: "red", "blue", "bystander", or "assassin".|
 
 <details><summary>Failed Responses</summary>
 
 ##### Token Omitted
-This error occurs if the body of the request does not contain a `token`, or if the `token` is empty.
+This error occurs if the querystring of the request does not contain a `token`, or if the `token` is empty.
 ```http
 HTTP/1.1 401 Unauthorized
 ```

@@ -17,6 +17,18 @@ class Game < ApplicationRecord
 
   default_scope { includes(:players, :game_cards, :current_player) }
 
+  def advance!
+    if current_player.intel?
+      current_player = players.where(team: current_player.team, role: :spy).first
+    else
+      current_player = players.where.not(team: current_player.team).where(role: :intel).first
+    end
+  end
+
+  def hint_invalid?(hint)
+    !hint.match?(/^\w+$/)
+  end
+
   def establish!
     prepare_cards
     prepare_players
@@ -30,10 +42,6 @@ class Game < ApplicationRecord
 
   def full?
     users.size > 3
-  end
-
-  def hint_invalid?(hint)
-    !hint.match?(/^\w+$/)
   end
 
   private

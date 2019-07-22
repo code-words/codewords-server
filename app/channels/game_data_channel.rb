@@ -20,6 +20,8 @@ class GameDataChannel < ApplicationCable::Channel
     elsif game.hint_invalid?(data['hintWord'])
       illegal_action("#{current_player.name} attempted to submit an invalid hint")
     else
+      game.advance!
+
       hint = current_player.game.hints.create(
         team: current_player.team,
         word: data['hintWord'],
@@ -35,8 +37,9 @@ class GameDataChannel < ApplicationCable::Channel
         }
       }
 
+      game.turns_remaining = relatedCards + 1
+      game.save
       broadcast_message payload
-      game.advance!
     end
   end
 

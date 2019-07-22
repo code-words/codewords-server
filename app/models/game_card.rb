@@ -10,7 +10,7 @@ class GameCard < ApplicationRecord
   validates :chosen, inclusion: {in: [true, false]}
   validates_numericality_of :address
 
-  default_scope { includes(:card) }
+  default_scope { includes(:card).order(:address) }
 
   def word
     card.word

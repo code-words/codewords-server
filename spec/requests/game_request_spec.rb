@@ -23,6 +23,25 @@ RSpec.describe "Games", type: :request do
       data = JSON.parse(response.body, symbolize_names: true)
       expect(data[:error]).to eq("You must provide a username")
     end
+
+    it "does not restrict the same username from being used on different games" do
+      post create_game_path, params: {name: "Archer"}, headers: {'Accept' => 'application/json'}
+
+      post create_game_path, params: {name: "Archer"}, headers: {'Accept' => 'application/json'}
+
+      expect(response).to have_http_status(:created)
+      expect(Game.all.size).to eq(2)
+      expect(User.all.size).to eq(1)
+
+      player = Player.last
+      expect(player.name).to eq("Archer")
+
+      data = JSON.parse(response.body, symbolize_names: true)
+      expect(data[:id]).to eq(player.id)
+      expect(data[:name]).to eq(player.name)
+      expect(data[:invite_code]).to eq(player.game.invite_code)
+      expect(data[:token]).to eq(player.token)
+    end
   end
 
   describe "POST /api/v1/games/:invite_code/players" do
@@ -53,7 +72,7 @@ RSpec.describe "Games", type: :request do
       expect(data[:error]).to eq("You must provide a username")
     end
 
-    it "blocks duplicate usernames" do
+    it "blocks duplicate usernames within the same game" do
       post create_game_path, params: {name: "Archer"}, headers: {'Accept' => 'application/json'}
       invite_code = JSON.parse(response.body, symbolize_names: true)[:invite_code]
 
@@ -62,6 +81,23 @@ RSpec.describe "Games", type: :request do
 
       data = JSON.parse(response.body, symbolize_names: true)
       expect(data[:error]).to eq("That username is already taken")
+    end
+
+    it "allows usernames not present in this game" do
+      post create_game_path, params: {name: "Archer"}, headers: {'Accept' => 'application/json'}
+      post create_game_path, params: {name: "Lana"}, headers: {'Accept' => 'application/json'}
+      invite_code = JSON.parse(response.body, symbolize_names: true)[:invite_code]
+
+      post join_game_path(invite_code), params: {name: "Archer"}, headers: {'Accept' => 'application/json'}
+      expect(response).to have_http_status(:ok)
+
+      player = Player.last
+      expect(player.name).to eq("Archer")
+
+      data = JSON.parse(response.body, symbolize_names: true)
+      expect(data[:id]).to eq(player.id)
+      expect(data[:name]).to eq(player.name)
+      expect(data[:token]).to eq(player.token)
     end
 
     it "requires a valid invite code" do

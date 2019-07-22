@@ -1,8 +1,8 @@
 class Api::V1::GamesController < Api::V1::ApiController
   def create
     if params[:name]
-      user = User.create(name: params[:name])
-      game = Game.create()
+      user = User.find_or_create_by(name: params[:name])
+      game = Game.create
       player = game.players.create(user: user)
       render status: 201, json: {
         invite_code: game.invite_code,
@@ -25,7 +25,7 @@ class Api::V1::GamesController < Api::V1::ApiController
       elsif game.username_taken? params[:name]
         render_error message: "That username is already taken"
       else
-        user = User.create(name: params[:name])
+        user = User.find_or_create_by(name: params[:name])
         player = game.players.create(user: user)
         render status: 200, json: {
           id: player.id,

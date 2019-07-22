@@ -89,12 +89,17 @@ describe GameDataChannel, type: :channel do
           expect(payload).to have_key(:players)
           expect(payload[:players].count).to eq(4)
 
+          player_ids = []
           payload[:players].each do |player|
             expect(player).to have_key(:id)
             expect(player).to have_key(:name)
             expect(player).to have_key(:isBlueTeam)
             expect(player).to have_key(:isIntel)
+            player_ids << player[:id]
           end
+
+          player_resources = Player.find(player_ids).to_a
+          expect(player_resources).to eq(player_resources.sort_by &:updated_at)
 
           expect(payload).to have_key(:firstTeam)
         else

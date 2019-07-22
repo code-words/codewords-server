@@ -27,6 +27,12 @@ RSpec.describe "Intel", type: :request do
         expect(example_card).to have_key(:id)
         expect(example_card).to have_key(:word)
         expect(example_card).to have_key(:type)
+
+        first_card = GameCard.find(data[:cards].first[:id])
+        expect(first_card.address).to eq(0)
+
+        last_card = GameCard.find(data[:cards].last[:id])
+        expect(last_card.address).to eq(24)
       end
     end
 

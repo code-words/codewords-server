@@ -13,7 +13,11 @@ class GameDataChannel < ApplicationCable::Channel
 
   def send_hint(data)
     if current_player.intel? && current_player.taking_turn?
-      hint = Hint.create(team: current_player.team, word: data['hintWord'], num: data['numCards'])
+      hint = current_player.game.hints.create(
+        team: current_player.team,
+        word: data['hintWord'],
+        num: data['numCards']
+      )
       payload = {
         type: 'hint-provided',
         data: {

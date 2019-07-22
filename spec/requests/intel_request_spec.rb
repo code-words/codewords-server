@@ -25,6 +25,7 @@ RSpec.describe "Intel", type: :request do
 
         example_card = data[:cards].sample
         expect(example_card).to have_key(:id)
+        expect(example_card).to have_key(:word)
         expect(example_card).to have_key(:type)
       end
     end

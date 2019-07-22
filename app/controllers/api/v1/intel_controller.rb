@@ -27,6 +27,7 @@ class Api::V1::IntelController < Api::V1::ApiController
       game.game_cards.map do |card|
         {
           id: card.id,
+          word: card.word,
           type: card.category
         }
       end

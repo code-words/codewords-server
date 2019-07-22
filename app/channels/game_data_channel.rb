@@ -11,6 +11,23 @@ class GameDataChannel < ApplicationCable::Channel
     # Any cleanup needed when channel is unsubscribed
   end
 
+  def hint(data)
+    if current_player.intel? && current_player.taking_turn?
+      hint = Hint.create(team: current_player.team, word: data['hintWord'], num: data['numCards'])
+      payload = {
+        type: 'hint-provided',
+        data: {
+          isBlueTeam: hint.blue?,
+          hintWord: hint.word,
+          relatedCards: hint.num
+        }
+      }
+      broadcast_message payload
+    else
+      illegal_action("#{current_player.name} attempted to submit a hint")
+    end
+  end
+
   private
     def compose_roster(game)
       game.players.map do |p|

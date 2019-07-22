@@ -32,13 +32,13 @@ class Game < ApplicationRecord
     users.size > 3
   end
 
-  def blue_first?
-    coin_flip > 0
-  end
-
   private
     def coin_flip
       @_coin_flip ||= Random.rand(0..1)
+    end
+
+    def blue_first?
+      coin_flip > 0
     end
 
     def blue_cards

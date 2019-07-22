@@ -11,7 +11,7 @@ class GameDataChannel < ApplicationCable::Channel
     # Any cleanup needed when channel is unsubscribed
   end
 
-  def hint(data)
+  def send_hint(data)
     if current_player.intel? && current_player.taking_turn?
       hint = Hint.create(team: current_player.team, word: data['hintWord'], num: data['numCards'])
       payload = {
@@ -116,7 +116,7 @@ class GameDataChannel < ApplicationCable::Channel
 
     def illegal_action(message)
       payload = {
-        type: "illegal_action",
+        type: "illegal-action",
         data: {
           error: message,
           byPlayerId: current_player.id

@@ -1,7 +1,7 @@
 class Game < ApplicationRecord
   has_many :players
   has_many :users, through: :players
-  belongs_to: :current_player, class_name: "Player"
+  belongs_to :current_player, class_name: "Player", optional: true
 
   has_many :game_cards
   has_many :cards, through: :game_cards
@@ -9,8 +9,6 @@ class Game < ApplicationRecord
   has_many :hints
   has_many :guesses
 
-  has_secure_token :game_key
-  has_secure_token :intel_key
   has_secure_token :invite_code
 
   accepts_nested_attributes_for :game_cards, :players

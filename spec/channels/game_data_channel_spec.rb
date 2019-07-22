@@ -26,9 +26,16 @@ describe GameDataChannel, type: :channel do
         expect(payload[:name]).to eq(@player.name)
 
         players = payload[:playerRoster]
+        player_ids = []
         expect(players).to be_instance_of(Array)
-        expect(players[0]).to have_key(:id)
-        expect(players[0]).to have_key(:name)
+        players.each do |player|
+          expect(player).to have_key(:id)
+          expect(player).to have_key(:name)
+          player_ids << player[:id]
+        end
+
+        player_resources = Player.find(player_ids).to_a
+        expect(player_resources).to eq(player_resources.sort_by &:updated_at)
       }
   end
 

@@ -2,10 +2,8 @@ class GameDataChannel < ApplicationCable::Channel
   on_subscribe :welcome_player
 
   def subscribed
-    # ActionCable doesn't give access to params[] here if mounted in application.rb
-    @player = Player.includes(:game, :user).find_by(token: connection.current_player.token)
-    @player.update(subscribed: true)
-    stream_from "game_#{@player.game.game_key}"
+    current_player.update(subscribed: true)
+    stream_from "game_#{current_player.game.game_key}"
     ensure_confirmation_sent
   end
 
@@ -48,9 +46,9 @@ class GameDataChannel < ApplicationCable::Channel
       broadcast_message = {
         type: "player-joined",
         data: {
-          id: @player.id,
-          name: @player.name,
-          playerRoster: compose_roster(@player.game)
+          id: current_player.id,
+          name: current_player.name,
+          playerRoster: compose_roster(current_player.game)
         }
       }
       ActionCable.server.broadcast "game_#{@player.game.game_key}", message: broadcast_message.to_json
@@ -58,7 +56,7 @@ class GameDataChannel < ApplicationCable::Channel
     end
 
     def start_game
-      game = @player.game
+      game = current_player.game
       game.reload
       if all_players_in?(game)
         game.establish!

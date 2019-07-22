@@ -17,7 +17,8 @@ describe GameDataChannel, type: :channel do
   end
 
   it 'broadcasts joining player info' do
-    expect{ subscribe }.to have_broadcasted_for(game)
+    expect{ subscribe }.to have_broadcasted_to(game)
+      .from_channel(GameDataChannel)
       .with{ |data|
         message = JSON.parse(data[:message], symbolize_names: true)
         expect(message[:type]).to eq("player-joined")
@@ -40,16 +41,19 @@ describe GameDataChannel, type: :channel do
   end
 
   it 'does not broadcast game start until all players are in' do
-    expect{ subscribe }.to have_broadcasted_for(game).once
+    expect{ subscribe }.to have_broadcasted_to(game)
+      .from_channel(GameDataChannel).once
 
     player2 = Player.create(game: game, user: User.create(name: "Lana"))
     stub_connection current_player: player2
-    expect{ subscribe }.to have_broadcasted_for(game).once
+    expect{ subscribe }.to have_broadcasted_to(game)
+      .from_channel(GameDataChannel).once
 
     player3 = Player.create(game: game, user: User.create(name: "Cyril"))
     stub_connection current_player: player3
 
-    expect{ subscribe }.to have_broadcasted_for(game).once
+    expect{ subscribe }.to have_broadcasted_to(game)
+      .from_channel(GameDataChannel).once
   end
 
   it 'broadcasts game start info once all players are in' do
@@ -69,7 +73,8 @@ describe GameDataChannel, type: :channel do
     # track number of times game-setup broadcast
     game_setup_count = 0
 
-    expect{ subscribe }.to have_broadcasted_for(game)
+    expect{ subscribe }.to have_broadcasted_to(game)
+      .from_channel(GameDataChannel)
       .twice # once with player-joined, once with game-setup
       .with{ |data|
         message = JSON.parse(data[:message], symbolize_names: true)
@@ -108,7 +113,7 @@ describe GameDataChannel, type: :channel do
           player_resources = Player.find(player_ids).to_a
           expect(player_resources).to eq(player_resources.sort_by &:updated_at)
 
-          expect(payload).to have_key(:firstTeam)
+          expect(payload).to have_key(:firstPlayerId)
         else
           # player-joined message should happen once, so allow that to pass
           expect(message[:type]).to eq("player-joined")

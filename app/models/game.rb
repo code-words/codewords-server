@@ -13,7 +13,7 @@ class Game < ApplicationRecord
 
   accepts_nested_attributes_for :game_cards, :players
 
-  default_scope { includes(:players, :game_cards, :current_player) }
+  default_scope { includes(:players, :game_cards) }
 
   def advance!
     if current_player.intel?
@@ -126,7 +126,7 @@ class Game < ApplicationRecord
         player.team = :blue
       end
 
-      current_player = blue_first? ? blue_players.first : red_players.first
+      self.current_player = blue_first? ? blue_players.first : red_players.first
 
       self.save
     end

@@ -43,7 +43,7 @@ class GameDataChannel < ApplicationCable::Channel
     end
 
     def welcome_player
-      broadcast_message = {
+      payload = {
         type: "player-joined",
         data: {
           id: current_player.id,
@@ -51,7 +51,7 @@ class GameDataChannel < ApplicationCable::Channel
           playerRoster: compose_roster(current_player.game)
         }
       }
-      ActionCable.server.broadcast "game_#{@player.game.game_key}", message: broadcast_message.to_json
+      broadcast_message payload
       start_game
     end
 
@@ -61,7 +61,7 @@ class GameDataChannel < ApplicationCable::Channel
       if all_players_in?(game)
         game.establish!
 
-        broadcast_message = {
+        payload = {
           type: "game-setup",
           data: {
             cards: compose_cards(game),
@@ -69,7 +69,7 @@ class GameDataChannel < ApplicationCable::Channel
             firstTeam: game.blue_first? ? :blue : :red
           }
         }
-        ActionCable.server.broadcast "game_#{@player.game.game_key}", message: broadcast_message.to_json
+        broadcast_message payload
       end
     end
 

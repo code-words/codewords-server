@@ -5,7 +5,7 @@ class Player < ApplicationRecord
   enum role: [:spy, :intel]
   enum team: [:red, :blue]
 
-  default_scope { order(:updated_at) }
+  default_scope { includes(:game, :user).order(:updated_at) }
 
   has_secure_token
 

@@ -29,6 +29,12 @@ class GameDataChannel < ApplicationCable::Channel
   end
 
   private
+######################################################################
+#   _ ____ ____ _  _    ____ ____ _  _ ___  ____ ____ ____ ____ ____ #
+#   | [__  |  | |\ |    |    |  | |\/| |__] |  | [__  |___ |__/ [__  #
+#  _| ___] |__| | \|    |___ |__| |  | |    |__| ___] |___ |  \ ___] #
+#                                                                    #
+######################################################################
     def compose_roster(game)
       game.players.map do |p|
         {
@@ -58,7 +64,12 @@ class GameDataChannel < ApplicationCable::Channel
         }
       end
     end
-
+###########################################
+# _  _ ____ ____ ____ ____ ____ ____ ____ #
+# |\/| |___ [__  [__  |__| | __ |___ [__  #
+# |  | |___ ___] ___] |  | |__] |___ ___] #
+#                                         #
+###########################################
     def welcome_player
       payload = {
         type: "player-joined",
@@ -90,14 +101,6 @@ class GameDataChannel < ApplicationCable::Channel
       end
     end
 
-    def broadcast_message(payload)
-      ActionCable.server.broadcast "game_#{current_player.game.game_key}", message: payload.to_json
-    end
-
-    def all_players_in?(game)
-      game.player_count == game.players.count{|p| p.subscribed?}
-    end
-
     def illegal_action(message)
       payload = {
         type: "illegal_action",
@@ -107,5 +110,18 @@ class GameDataChannel < ApplicationCable::Channel
         }
       }
       broadcast_message payload
+    end
+######################################
+# _  _ ____ _    ___  ____ ____ ____ #
+# |__| |___ |    |__] |___ |__/ [__  #
+# |  | |___ |___ |    |___ |  \ ___] #
+#                                    #
+######################################
+    def broadcast_message(payload)
+      ActionCable.server.broadcast "game_#{current_player.game.game_key}", message: payload.to_json
+    end
+
+    def all_players_in?(game)
+      game.player_count == game.players.count{|p| p.subscribed?}
     end
 end

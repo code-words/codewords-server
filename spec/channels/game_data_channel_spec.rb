@@ -13,11 +13,11 @@ describe GameDataChannel, type: :channel do
     subscribe
 
     expect(subscription).to be_confirmed
-    expect(subscription).to have_stream_for("game_#{game.game_key}")
+    expect(subscription).to have_stream_from(game)
   end
 
   it 'broadcasts joining player info' do
-    expect{ subscribe }.to have_broadcasted_to("game_#{game.game_key}")
+    expect{ subscribe }.to have_broadcasted_for(game)
       .with{ |data|
         message = JSON.parse(data[:message], symbolize_names: true)
         expect(message[:type]).to eq("player-joined")
@@ -40,16 +40,16 @@ describe GameDataChannel, type: :channel do
   end
 
   it 'does not broadcast game start until all players are in' do
-    expect{ subscribe }.to have_broadcasted_to("game_#{game.game_key}").once
+    expect{ subscribe }.to have_broadcasted_for(game).once
 
     player2 = Player.create(game: game, user: User.create(name: "Lana"))
     stub_connection current_player: player2
-    expect{ subscribe }.to have_broadcasted_to("game_#{game.game_key}").once
+    expect{ subscribe }.to have_broadcasted_for(game).once
 
     player3 = Player.create(game: game, user: User.create(name: "Cyril"))
     stub_connection current_player: player3
 
-    expect{ subscribe }.to have_broadcasted_to("game_#{game.game_key}").once
+    expect{ subscribe }.to have_broadcasted_for(game).once
   end
 
   it 'broadcasts game start info once all players are in' do
@@ -69,7 +69,7 @@ describe GameDataChannel, type: :channel do
     # track number of times game-setup broadcast
     game_setup_count = 0
 
-    expect{ subscribe }.to have_broadcasted_to("game_#{game.game_key}")
+    expect{ subscribe }.to have_broadcasted_for(game)
       .twice # once with player-joined, once with game-setup
       .with{ |data|
         message = JSON.parse(data[:message], symbolize_names: true)

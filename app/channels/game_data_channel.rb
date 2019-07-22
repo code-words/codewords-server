@@ -150,7 +150,7 @@ class GameDataChannel < ApplicationCable::Channel
     ##     ## ######## ######## ##        ######## ##     ##  ######
 
     def broadcast_message(payload)
-      ActionCable.server.broadcast_to current_player.game, message: payload.to_json
+      GameDataChannel.broadcast_to current_player.game, message: payload.to_json
     end
 
     def all_players_in?(game)

@@ -97,4 +97,15 @@ class GameDataChannel < ApplicationCable::Channel
     def all_players_in?(game)
       game.player_count == game.players.count{|p| p.subscribed?}
     end
+
+    def illegal_action(message)
+      payload = {
+        type: "illegal_action",
+        data: {
+          error: message,
+          byPlayerId: current_player.id
+        }
+      }
+      broadcast_message payload
+    end
 end

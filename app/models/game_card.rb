@@ -1,6 +1,4 @@
 class GameCard < ApplicationRecord
-  before_validation :set_chosen_false
-
   belongs_to :game
   belongs_to :card
 
@@ -15,9 +13,4 @@ class GameCard < ApplicationRecord
   def word
     card.word
   end
-
-  private
-    def set_chosen_false
-      self.chosen = false
-    end
 end

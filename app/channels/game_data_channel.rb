@@ -164,9 +164,13 @@ class GameDataChannel < ApplicationCable::Channel
       payload = {
         type: "board-update",
         data: {
-          card: details[:card],
+          card: {
+            id: details[:card].id,
+            flipped: details[:card].chosen,
+            type: details[:card].category
+          },
           remainingAttempts: details[:remainingAttempts],
-          currentPlayer: details[:currentPlayer]
+          currentPlayer: details[:currentPlayer].id
         }
       }
       broadcast_message payload
@@ -176,7 +180,11 @@ class GameDataChannel < ApplicationCable::Channel
       payload = {
         type: "game-over",
         data: {
-          card: details[:card],
+          card: {
+            id: details[:card].id,
+            flipped: details[:card].chosen,
+            type: details[:card].category
+          },
           winningTeam: details[:winningTeam]
         }
       }

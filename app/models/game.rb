@@ -20,7 +20,7 @@ class Game < ApplicationRecord
     cp = self.current_player
     opposing_team = cp.red? ? :blue : :red
     @turn_card = all_cards.find{|card| card.id == card_id}
-    @turn_card.chosen = true
+    @turn_card.update_attribute(:chosen, true)
 
     # Handle Gameover States
     if @turn_card.assassin?

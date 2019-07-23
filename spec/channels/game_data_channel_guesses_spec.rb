@@ -210,6 +210,47 @@ describe GameDataChannel, type: :channel do
       }
   end
 
+  it 'ends the game if the guess was for the last of opposing team\'s cards' do
+    spy = @game.players.create(user: User.create(name: "Cheryl"), role: :spy, team: :red)
+    stub_connection current_player: spy
+    subscription = subscribe
+
+    built_player = Player.find(spy.id)
+    built_player.update(role: :spy)
+    @game.current_player = built_player
+    @game.guesses_remaining = 3
+    guess_card = nil
+    opposing_team = built_player.blue? ? :red : :blue
+    player_cards = @game.game_cards.where(category: opposing_team)
+    player_cards.each_with_index do |card, index|
+      unless index == 0
+        card.flipped = true
+      else
+        guess_card = card
+      end
+    end
+    @game.save
+    teammate = Player.where(game: @game, team: built_player.team).where.not(id: built_player.id).first
+    teammate.update(role: :intel)
+
+    expect{subscription.send_guess(id: guess_card.id)}
+      .to have_broadcasted_to(@game)
+      .from_channel(GameDataChannel)
+      .once
+      .with{ |data|
+        message = JSON.parse(data[:message], symbolize_names: true)
+        expect(message[:type]).to eq("game-over")
+
+        payload = message[:data]
+        received_card = payload[:card]
+        expect(received_card[:id]).to eq(guess_card.id)
+        expect(received_card[:flipped]).to eq(true)
+        expect(received_card[:type]).to eq(guess_card.category)
+
+        expect(payload[:winningTeam]).to eq(opposing_team)
+      }
+  end
+
   it 'ends the game if the guess was for the last of player\'s cards' do
     spy = @game.players.create(user: User.create(name: "Cheryl"), role: :spy, team: :red)
     stub_connection current_player: spy

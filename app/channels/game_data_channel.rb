@@ -43,6 +43,19 @@ class GameDataChannel < ApplicationCable::Channel
     end
   end
 
+  def send_guess(data)
+    game = current_player.game
+    if game.current_player != current_player
+      illegal_action("#{current_player.name} attempted to submit a guess out of turn")
+    elsif !current_player.spy?
+      illegal_action("#{current_player.name} attempted to submit a guess, but doesn't have the Spy role")
+    elsif !game.includes_card?(data[:id])
+      illegal_action("#{current_player.name} attempted to submit a guess for a card not in this game")
+    else
+      # process hint
+    end
+  end
+
   private
 
           ##  ######   #######  ##    ##

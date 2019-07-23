@@ -11,48 +11,53 @@ class GameDataChannel < ApplicationCable::Channel
     # Any cleanup needed when channel is unsubscribed
   end
 
-  def send_hint(data)
+  def send_hint(hint)
     game = current_player.game
     if game.current_player != current_player
       illegal_action("#{current_player.name} attempted to submit a hint out of turn")
     elsif !current_player.intel?
       illegal_action("#{current_player.name} attempted to submit a hint, but doesn't have the Intel role")
-    elsif game.hint_invalid?(data[:hintWord])
+    elsif game.hint_invalid?(hint[:hintWord])
       illegal_action("#{current_player.name} attempted to submit an invalid hint")
     else
       game.advance!
 
-      hint = current_player.game.hints.create(
+      saved_hint = current_player.game.hints.create(
         team: current_player.team,
-        word: data[:hintWord],
-        num: data[:numCards]
+        word: hint[:hintWord],
+        num: hint[:numCards]
       )
 
       payload = {
         type: 'hint-provided',
         data: {
-          isBlueTeam: hint.blue?,
-          hintWord: hint.word,
-          relatedCards: hint.num
+          isBlueTeam: saved_hint.blue?,
+          hintWord: saved_hint.word,
+          relatedCards: saved_hint.num
         }
       }
 
-      game.guesses_remaining = hint.num + 1
+      game.guesses_remaining = saved_hint.num + 1
       game.save
       broadcast_message payload
     end
   end
 
-  def send_guess(data)
+  def send_guess(card)
     game = current_player.game
     if game.current_player != current_player
       illegal_action("#{current_player.name} attempted to submit a guess out of turn")
     elsif !current_player.spy?
       illegal_action("#{current_player.name} attempted to submit a guess, but doesn't have the Spy role")
-    elsif !game.includes_card?(data[:id])
+    elsif !game.includes_card?(card[:id])
       illegal_action("#{current_player.name} attempted to submit a guess for a card not in this game")
     else
-      # process hint
+      contents = game.process_guess(card[:id])
+      if game.over?
+        send_game_over contents
+      else
+        send_board_update contents
+      end
     end
   end
 

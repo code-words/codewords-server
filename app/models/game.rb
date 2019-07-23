@@ -15,11 +15,49 @@ class Game < ApplicationRecord
 
   default_scope { includes(:players, :game_cards) }
 
+  def process_guess(card_id)
+    all_cards = self.game_cards.to_a
+    cp = self.current_player
+    opposing_team = cp.red? ? :blue : :red
+    @turn_card = all_cards.find(card_id)
+    @turn_card.chosen = true
+
+    # Handle Gameover States
+    if @turn_card.assassin?
+      @gameover = true
+      @winner = opposing_team
+      return gameover_response
+    else
+      player_cards = all_cards.select{|card| card.category == cp.team}
+      opposing_cards = all_cards.select{|card| card.category == opposing_team}
+      if player_cards.all?{|card| card.chosen?}
+        @gameover = true
+        @winner = cp.team
+        return gameover_response
+      elsif opposing_cards.all?{|card| card.chosen?}
+        @gameover = true
+        @winner = opposing_team
+        return gameover_response
+      end
+    end
+
+    # Handle Continuing Game
+    if card_is_current_team? && self.guesses_remaining > 1
+      self.guesses_remaining -= 1
+      self.save
+      return guess_response
+    else
+      self.advance!
+      return guess_response
+    end
+  end
+
   def advance!
     if self.current_player.intel?
       self.current_player = players.where(team: self.current_player.team, role: :spy).first
     else
       self.current_player = players.where.not(team: self.current_player.team).where(role: :intel).first
+      self.guesses_remaining = 0
     end
     self.save
   end
@@ -41,6 +79,10 @@ class Game < ApplicationRecord
 
   def full?
     users.size > 3
+  end
+
+  def over?
+    @gameover || false
   end
 
   def includes_card?(id)
@@ -136,4 +178,38 @@ class Game < ApplicationRecord
 
       self.save
     end
+
+     ######   ##     ## ########  ######   ######
+    ##    ##  ##     ## ##       ##    ## ##    ##
+    ##        ##     ## ##       ##       ##
+    ##   #### ##     ## ######    ######   ######
+    ##    ##  ##     ## ##             ##       ##
+    ##    ##  ##     ## ##       ##    ## ##    ##
+     ######    #######  ########  ######   ######
+
+    ##     ##    ###    ##    ## ########  ##       #### ##    ##  ######
+    ##     ##   ## ##   ###   ## ##     ## ##        ##  ###   ## ##    ##
+    ##     ##  ##   ##  ####  ## ##     ## ##        ##  ####  ## ##
+    ######### ##     ## ## ## ## ##     ## ##        ##  ## ## ## ##   ####
+    ##     ## ######### ##  #### ##     ## ##        ##  ##  #### ##    ##
+    ##     ## ##     ## ##   ### ##     ## ##        ##  ##   ### ##    ##
+    ##     ## ##     ## ##    ## ########  ######## #### ##    ##  ######
+
+    def card_is_current_team?
+      @turn_card.category == self.current_player.team
+    end
+
+    def guess_response
+      {
+        card: @turn_card,
+        remainingAttempts: self.guesses_remaining,
+        currentPlayer: self.current_player
+      }
+    end
+
+    def gameover_response
+      {
+        card: @turn_card,
+        winningTeam: @winner
+      }
 end

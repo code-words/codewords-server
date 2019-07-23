@@ -17,7 +17,6 @@ class GameDataChannel < ApplicationCable::Channel
     if game.current_player != current_player
       illegal_action("#{current_player.name} attempted to submit a hint out of turn")
     elsif !current_player.intel?
-      binding.pry
       illegal_action("#{current_player.name} attempted to submit a hint, but doesn't have the Intel role")
     elsif game.hint_invalid?(data[:hintWord])
       illegal_action("#{current_player.name} attempted to submit an invalid hint")

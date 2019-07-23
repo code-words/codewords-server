@@ -36,4 +36,26 @@ describe GameDataChannel, type: :channel do
         expect(payload).to have_key(:relatedCards)
       }
   end
+
+  it 'rejects a hint if sending player is not current player' do
+    intel = @game.players.create(user: User.create(name: "Cheryl"), role: :intel)
+    stub_connection current_player: intel
+    subscription = subscribe
+
+    @game.current_player = Player.where.not(id: intel.id).first
+    @game.save
+
+    expect{subscription.send_hint(hintWord: "Bob", numCards: 3)}
+      .to have_broadcasted_to(@game)
+      .from_channel(GameDataChannel)
+      .once
+      .with{ |data|
+        message = JSON.parse(data[:message], symbolize_names: true)
+        expect(message[:type]).to eq("illegal-action")
+
+        payload = message[:data]
+        expect(payload).to have_key(:error)
+        expect(payload).to have_key(:byPlayerId)
+      }
+  end
 end

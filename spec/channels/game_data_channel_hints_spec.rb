@@ -93,7 +93,7 @@ describe GameDataChannel, type: :channel do
       }
   end
 
-  it 'rejects a hint if sending player is not current player' do
+  it 'rejects a hint if hint text is invalid' do
     intel = @game.players.create(user: User.create(name: "Cheryl"), role: :intel)
     stub_connection current_player: intel
     subscription = subscribe

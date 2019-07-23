@@ -257,15 +257,17 @@ describe GameDataChannel, type: :channel do
     @game.guesses_remaining = 3
     guess_card = nil
     opposing_team = built_player.blue? ? :red : :blue
-    player_cards = @game.game_cards.where(category: opposing_team)
-    player_cards.each_with_index do |card, index|
+    opposing_cards = @game.game_cards.where(category: opposing_team)
+    opposing_cards.each_with_index do |card, index|
       unless index == 0
         card.chosen = true
+        card.save!
       else
         guess_card = card
       end
     end
-    @game.save
+    @game.save!
+    @game.reload
     teammate = Player.where(game: @game, team: built_player.team).where.not(id: built_player.id).first
     teammate.update(role: :intel)
 
@@ -283,7 +285,7 @@ describe GameDataChannel, type: :channel do
         expect(received_card[:flipped]).to eq(true)
         expect(received_card[:type]).to eq(guess_card.category)
 
-        expect(payload[:winningTeam]).to eq(opposing_team)
+        expect(payload[:winningTeam]).to eq(opposing_team.to_s)
       }
   end
 
@@ -301,11 +303,13 @@ describe GameDataChannel, type: :channel do
     player_cards.each_with_index do |card, index|
       unless index == 0
         card.chosen = true
+        card.save!
       else
         guess_card = card
       end
     end
-    @game.save
+    @game.save!
+    @game.reload
     teammate = Player.where(game: @game, team: built_player.team).where.not(id: built_player.id).first
     teammate.update(role: :intel)
 

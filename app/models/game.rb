@@ -19,7 +19,7 @@ class Game < ApplicationRecord
     all_cards = self.game_cards.to_a
     cp = self.current_player
     opposing_team = cp.red? ? :blue : :red
-    @turn_card = all_cards.find(card_id)
+    @turn_card = all_cards.find{|card| card.id == card_id}
     @turn_card.chosen = true
 
     # Handle Gameover States
@@ -29,7 +29,7 @@ class Game < ApplicationRecord
       return gameover_response
     else
       player_cards = all_cards.select{|card| card.category == cp.team}
-      opposing_cards = all_cards.select{|card| card.category == opposing_team}
+      opposing_cards = all_cards.select{|card| card.category == opposing_team.to_s}
       if player_cards.all?{|card| card.chosen?}
         @gameover = true
         @winner = cp.team
@@ -212,4 +212,5 @@ class Game < ApplicationRecord
         card: @turn_card,
         winningTeam: @winner
       }
+    end
 end

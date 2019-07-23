@@ -260,7 +260,7 @@ describe GameDataChannel, type: :channel do
     player_cards = @game.game_cards.where(category: opposing_team)
     player_cards.each_with_index do |card, index|
       unless index == 0
-        card.flipped = true
+        card.chosen = true
       else
         guess_card = card
       end
@@ -300,7 +300,7 @@ describe GameDataChannel, type: :channel do
     player_cards = @game.game_cards.where(category: built_player.team)
     player_cards.each_with_index do |card, index|
       unless index == 0
-        card.flipped = true
+        card.chosen = true
       else
         guess_card = card
       end

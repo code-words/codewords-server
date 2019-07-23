@@ -21,6 +21,7 @@ class Game < ApplicationRecord
     else
       self.current_player = players.where.not(team: self.current_player.team).where(role: :intel).first
     end
+    self.save
   end
 
   def hint_invalid?(hint)

@@ -3,7 +3,7 @@ class GameDataChannel < ApplicationCable::Channel
 
   def subscribed
     current_player.update(subscribed: true)
-    stream_from current_player.game
+    stream_for current_player.game
     ensure_confirmation_sent
   end
 
@@ -12,7 +12,6 @@ class GameDataChannel < ApplicationCable::Channel
   end
 
   def send_hint(data)
-    # binding.pry
     game = current_player.game
     if game.current_player != current_player
       illegal_action("#{current_player.name} attempted to submit a hint out of turn")

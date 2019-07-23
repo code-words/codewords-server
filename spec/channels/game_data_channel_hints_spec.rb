@@ -34,6 +34,7 @@ describe GameDataChannel, type: :channel do
         expect(payload).to have_key(:isBlueTeam)
         expect(payload).to have_key(:hintWord)
         expect(payload).to have_key(:relatedCards)
+        expect(payload).to have_key(:currentPlayerId)
       }
 
     @game.reload

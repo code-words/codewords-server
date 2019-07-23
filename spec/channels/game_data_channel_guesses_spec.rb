@@ -40,7 +40,7 @@ describe GameDataChannel, type: :channel do
         expect(received_card[:type]).to eq(guess_card.category)
 
         expect(payload[:remainingAttempts]).to eq(2)
-        expect(payload[:currentPlayer]).to eq(built_player.id)
+        expect(payload[:currentPlayerId]).to eq(built_player.id)
       }
 
     @game.reload
@@ -170,7 +170,7 @@ describe GameDataChannel, type: :channel do
         expect(received_card[:type]).to eq(guess_card.category)
 
         expect(payload[:remainingAttempts]).to eq(0)
-        expect(payload[:currentPlayer]).to eq(next_player.id)
+        expect(payload[:currentPlayerId]).to eq(next_player.id)
       }
   end
 
@@ -206,7 +206,7 @@ describe GameDataChannel, type: :channel do
         expect(received_card[:type]).to eq(guess_card.category)
 
         expect(payload[:remainingAttempts]).to eq(0)
-        expect(payload[:currentPlayer]).to eq(next_player.id)
+        expect(payload[:currentPlayerId]).to eq(next_player.id)
       }
   end
 
@@ -242,7 +242,7 @@ describe GameDataChannel, type: :channel do
         expect(received_card[:type]).to eq(guess_card.category)
 
         expect(payload[:remainingAttempts]).to eq(0)
-        expect(payload[:currentPlayer]).to eq(next_player.id)
+        expect(payload[:currentPlayerId]).to eq(next_player.id)
       }
   end
 

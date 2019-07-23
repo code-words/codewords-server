@@ -37,7 +37,7 @@ describe GameDataChannel, type: :channel do
         received_card = payload[:card]
         expect(received_card[:id]).to eq(guess_card.id)
         expect(received_card[:flipped]).to eq(true)
-        expect(received_card[:type]).to eq(guess_card.team)
+        expect(received_card[:type]).to eq(guess_card.category)
 
         expect(payload[:remainingAttempts]).to eq(2)
         expect(payload[:currentPlayer]).to eq(built_player.id)
@@ -50,5 +50,30 @@ describe GameDataChannel, type: :channel do
     guess = Guess.last
     expect(guess.game_card).to eq(guess_card)
     expect(guess.team).to eq(built_player.team)
+  end
+
+  it 'rejects a guess if sending player is not current player' do
+    intel = @game.players.create(user: User.create(name: "Cheryl"), role: :intel)
+    stub_connection current_player: intel
+    subscription = subscribe
+
+    @game.current_player = Player.where.not(id: intel.id).first
+    @game.guesses_remaining = 1
+    @game.save
+
+    guess_card = @game.game_cards.where(category: @game.current_player.team).first
+
+    expect{subscription.send_guess(id: guess_card.id)}
+      .to have_broadcasted_to(@game)
+      .from_channel(GameDataChannel)
+      .once
+      .with{ |data|
+        message = JSON.parse(data[:message], symbolize_names: true)
+        expect(message[:type]).to eq("illegal-action")
+
+        payload = message[:data]
+        expect(payload[:error]).to eq("#{intel.name} attempted to submit a guess out of turn")
+        expect(payload[:byPlayerId]).to eq(intel.id)
+      }
   end
 end

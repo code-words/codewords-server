@@ -22,7 +22,7 @@ describe GameDataChannel, type: :channel do
     teammate = Player.where(game: @game, team: built_player.team).where.not(id: built_player.id).first
     teammate.update(role: :spy)
 
-    expect{subscription.send_hint(hintWord: "Bob", numCards: 3)}
+    expect{subscription.send_hint({"hintWord" => "Bob", "numCards" => "3"})}
       .to have_broadcasted_to(@game)
       .from_channel(GameDataChannel)
       .once
@@ -53,7 +53,7 @@ describe GameDataChannel, type: :channel do
     @game.current_player = Player.where.not(id: intel.id).first
     @game.save
 
-    expect{subscription.send_hint(hintWord: "Bob", numCards: 3)}
+    expect{subscription.send_hint({"hintWord" => "Bob", "numCards" => "3"})}
       .to have_broadcasted_to(@game)
       .from_channel(GameDataChannel)
       .once
@@ -79,7 +79,7 @@ describe GameDataChannel, type: :channel do
     teammate = @game.players.where(team: random_player.team).where.not(id: random_player.id)
     teammate.update(role: :intel)
 
-    expect{subscription.send_hint(hintWord: "Bob", numCards: 3)}
+    expect{subscription.send_hint({"hintWord" => "Bob", "numCards" => "3"})}
       .to have_broadcasted_to(@game)
       .from_channel(GameDataChannel)
       .once
@@ -105,7 +105,7 @@ describe GameDataChannel, type: :channel do
     teammate = @game.players.where(team: intel.team).where.not(id: intel.id)
     teammate.update(role: :spy)
 
-    expect{subscription.send_hint(hintWord: "Bob Loblaw", numCards: 3)}
+    expect{subscription.send_hint({"hintWord" => "Bob Loblaw", "numCards" => "3"})}
       .to have_broadcasted_to(@game)
       .from_channel(GameDataChannel)
       .once

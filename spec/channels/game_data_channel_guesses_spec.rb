@@ -25,7 +25,7 @@ describe GameDataChannel, type: :channel do
 
     guess_card = @game.game_cards.where(category: built_player.team).first
 
-    expect{subscription.send_guess(id: guess_card.id)}
+    expect{subscription.send_guess({"id" => "#{guess_card.id}"})}
       .to have_broadcasted_to(@game)
       .from_channel(GameDataChannel)
       .once
@@ -63,7 +63,7 @@ describe GameDataChannel, type: :channel do
 
     guess_card = @game.game_cards.where(category: @game.current_player.team).first
 
-    expect{subscription.send_guess(id: guess_card.id)}
+    expect{subscription.send_guess({"id" => "#{guess_card.id}"})}
       .to have_broadcasted_to(@game)
       .from_channel(GameDataChannel)
       .once
@@ -91,7 +91,7 @@ describe GameDataChannel, type: :channel do
 
     guess_card = @game.game_cards.where(category: built_player.team).first
 
-    expect{subscription.send_guess(id: guess_card.id)}
+    expect{subscription.send_guess({"id" => "#{guess_card.id}"})}
       .to have_broadcasted_to(@game)
       .from_channel(GameDataChannel)
       .once
@@ -155,7 +155,7 @@ describe GameDataChannel, type: :channel do
     opposing_team = built_player.blue? ? :red : :blue
     next_player = @game.players.where(team: opposing_team, role: :intel).first
 
-    expect{subscription.send_guess(id: guess_card.id)}
+    expect{subscription.send_guess({"id" => "#{guess_card.id}"})}
       .to have_broadcasted_to(@game)
       .from_channel(GameDataChannel)
       .once
@@ -191,7 +191,7 @@ describe GameDataChannel, type: :channel do
     opposing_team = built_player.blue? ? :red : :blue
     next_player = @game.players.where(team: opposing_team, role: :intel).first
 
-    expect{subscription.send_guess(id: guess_card.id)}
+    expect{subscription.send_guess({"id" => "#{guess_card.id}"})}
       .to have_broadcasted_to(@game)
       .from_channel(GameDataChannel)
       .once
@@ -227,7 +227,7 @@ describe GameDataChannel, type: :channel do
     guess_card = @game.game_cards.where(category: opposing_team).first
     next_player = @game.players.where(team: opposing_team, role: :intel).first
 
-    expect{subscription.send_guess(id: guess_card.id)}
+    expect{subscription.send_guess({"id" => "#{guess_card.id}"})}
       .to have_broadcasted_to(@game)
       .from_channel(GameDataChannel)
       .once
@@ -271,7 +271,7 @@ describe GameDataChannel, type: :channel do
     teammate = Player.where(game: @game, team: built_player.team).where.not(id: built_player.id).first
     teammate.update(role: :intel)
 
-    expect{subscription.send_guess(id: guess_card.id)}
+    expect{subscription.send_guess({"id" => "#{guess_card.id}"})}
       .to have_broadcasted_to(@game)
       .from_channel(GameDataChannel)
       .once
@@ -313,7 +313,7 @@ describe GameDataChannel, type: :channel do
     teammate = Player.where(game: @game, team: built_player.team).where.not(id: built_player.id).first
     teammate.update(role: :intel)
 
-    expect{subscription.send_guess(id: guess_card.id)}
+    expect{subscription.send_guess({"id" => "#{guess_card.id}"})}
       .to have_broadcasted_to(@game)
       .from_channel(GameDataChannel)
       .once
@@ -348,7 +348,7 @@ describe GameDataChannel, type: :channel do
     guess_card = @game.game_cards.where(category: :assassin).first
     next_player = @game.players.where(team: opposing_team, role: :intel).first
 
-    expect{subscription.send_guess(id: guess_card.id)}
+    expect{subscription.send_guess({"id" => "#{guess_card.id}"})}
       .to have_broadcasted_to(@game)
       .from_channel(GameDataChannel)
       .once

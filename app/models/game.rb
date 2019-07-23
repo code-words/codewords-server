@@ -19,8 +19,10 @@ class Game < ApplicationRecord
     all_cards = self.game_cards.to_a
     cp = self.current_player
     opposing_team = cp.red? ? :blue : :red
+
     @turn_card = all_cards.find{|card| card.id == card_id}
     @turn_card.update_attribute(:chosen, true)
+    self.guesses.create(team: cp.team, game_card: @turn_card)
 
     # Handle Gameover States
     if @turn_card.assassin?

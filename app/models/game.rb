@@ -43,6 +43,11 @@ class Game < ApplicationRecord
     users.size > 3
   end
 
+  def includes_card?(id)
+    card_ids = self.game_cards.pluck :id
+    card_ids.include? id
+  end
+
   private
 
      ######      ###    ##     ## ########

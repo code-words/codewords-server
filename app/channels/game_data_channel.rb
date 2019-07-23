@@ -54,9 +54,10 @@ class GameDataChannel < ApplicationCable::Channel
     else
       contents = game.process_guess(card[:id])
       if game.over?
-        send_game_over contents
+        game.save
+        game_over contents
       else
-        send_board_update contents
+        board_update contents
       end
     end
   end
@@ -154,6 +155,29 @@ class GameDataChannel < ApplicationCable::Channel
         data: {
           error: message,
           byPlayerId: current_player.id
+        }
+      }
+      broadcast_message payload
+    end
+
+    def board_update(details)
+      payload = {
+        type: "board-update",
+        data: {
+          card: details[:card],
+          remainingAttempts: details[:remainingAttempts],
+          currentPlayer: details[:currentPlayer]
+        }
+      }
+      broadcast_message payload
+    end
+
+    def game_over(details)
+      payload = {
+        type: "game-over",
+        data: {
+          card: details[:card],
+          winningTeam: details[:winningTeam]
         }
       }
       broadcast_message payload

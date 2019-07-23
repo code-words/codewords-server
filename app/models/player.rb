@@ -12,8 +12,4 @@ class Player < ApplicationRecord
   def name
     user.name
   end
-
-  def taking_turn?
-    game.current_player == self
-  end
 end

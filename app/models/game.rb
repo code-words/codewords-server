@@ -16,10 +16,10 @@ class Game < ApplicationRecord
   default_scope { includes(:players, :game_cards) }
 
   def advance!
-    if current_player.intel?
-      current_player = players.where(team: current_player.team, role: :spy).first
+    if self.current_player.intel?
+      self.current_player = players.where(team: self.current_player.team, role: :spy).first
     else
-      current_player = players.where.not(team: current_player.team).where(role: :intel).first
+      self.current_player = players.where.not(team: self.current_player.team).where(role: :intel).first
     end
   end
 

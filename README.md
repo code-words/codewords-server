@@ -373,7 +373,7 @@ This message is sent from the game client to the server by the current player. S
 ```js
 cable.sendHint({
   hintWord: "tree",
-  numCards: 3
+  numCards: "3"
 })
 ```
 
@@ -396,18 +396,20 @@ This message is broadcast to all players after a valid [Hint Sent](#hint-sent) a
   data: {
     isBlueTeam: true,
     hintWord: "tree",
-    relatedCards: 3
+    relatedCards: 3,
+    currentPlayerId: 1
   }
 }
 ```
 
 |key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|Description|
-|:---               |:--- |
-|`type`             |String: The type of message being broadcast.|
-|`data`             |Object: The data payload of the message.|
-|`data.isBlueTeam`  |Boolean: Whether the hint belongs to the Blue team or not.|
-|`data.hintWord`    |String: The hint word provided by the player.|
-|`data.relatedCards`|Integer: The number of cards this hint is related to.|
+|:---                  |:--- |
+|`type`                |String: The type of message being broadcast.|
+|`data`                |Object: The data payload of the message.|
+|`data.isBlueTeam`     |Boolean: Whether the hint belongs to the Blue team or not.|
+|`data.hintWord`       |String: The hint word provided by the player.|
+|`data.relatedCards`   |Integer: The number of cards this hint is related to.|
+|`data.currentPlayerId`|Integer: The ID of the new current player.|
 
 
 ---
@@ -420,7 +422,7 @@ This message is sent from the game client to the server by the current player. S
 
 ```js
 cable.sendGuess({
-  id: 1
+  id: "1"
 })
 ```
 
@@ -446,7 +448,7 @@ This message is broadcast to all players after a valid [Guess Sent](#guess-sent)
       type: "red"
     },
     remainingAttempts: 2,
-    currentPlayer: 1
+    currentPlayerId: 1
   }
 }
 ```
@@ -460,7 +462,7 @@ This message is broadcast to all players after a valid [Guess Sent](#guess-sent)
 |`-->card.flipped`       |Boolean: The flipped state of the card (always `true`).|
 |`-->card.type`          |String: The type of card to render in the UI: "red", "blue", "bystander", or "assassin".|
 |`data.remainingAttempts`|Integer: The number of guesses remaining.|
-|`data.currentPlayer`    |Integer: The ID of the current player.|
+|`data.currentPlayerId`  |Integer: The ID of the current player.|
 
 ---
 

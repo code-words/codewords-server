@@ -34,7 +34,8 @@ class GameDataChannel < ApplicationCable::Channel
         data: {
           isBlueTeam: saved_hint.blue?,
           hintWord: saved_hint.word,
-          relatedCards: saved_hint.num
+          relatedCards: saved_hint.num,
+          currentPlayerId: game.current_player.id
         }
       }
 
@@ -172,7 +173,7 @@ class GameDataChannel < ApplicationCable::Channel
             type: details[:card].category
           },
           remainingAttempts: details[:remainingAttempts],
-          currentPlayer: details[:currentPlayer].id
+          currentPlayerId: details[:currentPlayer].id
         }
       }
       broadcast_message payload

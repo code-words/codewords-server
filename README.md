@@ -60,10 +60,14 @@ At this point, we have everything we need for our Rails environment. If you wish
 
 ## Websockets Message Events
 
-|From Server                    |From Client|
-|:---:                          |:---:|
-|[Player Joined](#player-joined)|     |
-|[Game Started](#game-started)  |     |
+|From Server                      |From Client              |
+|:---:                            |:---:                    |
+|[Player Joined](#player-joined)  |                         |
+|[Game Started](#game-started)    |                         |
+|[Hint Provided](#hint-provided)  |[Hint Sent](#hint-sent)  |
+|[Board Update](#board-update)    |[Guess Sent](#guess-sent)|
+|[Game Over](#game-over)          |                         |
+|[Illegal Action](#illegal-action)|                         |
 
 ---
 

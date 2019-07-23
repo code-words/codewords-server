@@ -12,20 +12,21 @@ class GameDataChannel < ApplicationCable::Channel
   end
 
   def send_hint(hint)
+    current_player.reload
     game = current_player.game
     if game.current_player != current_player
       illegal_action("#{current_player.name} attempted to submit a hint out of turn")
     elsif !current_player.intel?
       illegal_action("#{current_player.name} attempted to submit a hint, but doesn't have the Intel role")
-    elsif game.hint_invalid?(hint[:hintWord])
+    elsif game.hint_invalid?(hint["hintWord"])
       illegal_action("#{current_player.name} attempted to submit an invalid hint")
     else
       game.advance!
 
       saved_hint = current_player.game.hints.create(
         team: current_player.team,
-        word: hint[:hintWord],
-        num: hint[:numCards]
+        word: hint["hintWord"],
+        num: hint["numCards"].to_i
       )
 
       payload = {
@@ -44,15 +45,16 @@ class GameDataChannel < ApplicationCable::Channel
   end
 
   def send_guess(card)
+    current_player.reload
     game = current_player.game
     if game.current_player != current_player
       illegal_action("#{current_player.name} attempted to submit a guess out of turn")
     elsif !current_player.spy?
       illegal_action("#{current_player.name} attempted to submit a guess, but doesn't have the Spy role")
-    elsif !game.includes_card?(card[:id])
+    elsif !game.includes_card?(card["id"].to_i)
       illegal_action("#{current_player.name} attempted to submit a guess for a card not in this game")
     else
-      contents = game.process_guess(card[:id])
+      contents = game.process_guess(card["id"].to_i)
       if game.over?
         game.save
         game_over contents

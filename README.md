@@ -86,7 +86,7 @@ POST /api/v1/games
 }
 ```
 |key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|description|
-|:---: |:--- |
+|:---  |:--- |
 |`name`|String: The username that the requesting user would like to use during the game|
 
 ##### Successful Response
@@ -102,7 +102,7 @@ HTTP/1.1 201 Created
 }
 ```
 |key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|description|
-|:---:        |:--- |
+|:---         |:--- |
 |`invite_code`|String: A code which can be shared with other players. They will use this code to join the game.|
 |`id`         |Integer: The unique id for the player.|
 |`name`       |String: A confirmation that the requested name was indeed assigned to the player.|
@@ -139,7 +139,7 @@ POST /api/v1/games/:invite_code/players
 }
 ```
 |key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|description|
-|:---:         |:--- |
+|:---          |:--- |
 |`:invite_code`|String: (Within URI) The invite code provided by the person inviting the requesting user to their existing game.|
 |`name`        |String: The username that the requesting user would like to use during the game|
 
@@ -155,7 +155,7 @@ HTTP/1.1 200 OK
 }
 ```
 |key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|description|
-|:---:  |:--- |
+|:---   |:--- |
 |`id`   |Integer: The unique id for the player.|
 |`name` |String: A confirmation that the requested name was indeed assigned to the player.|
 |`token`|String: A token unique to the current player, which can be used to identify them in future requests to the server.|
@@ -219,7 +219,7 @@ Request the Intel data for a game, allowing the player to see which cards belong
 GET /api/v1/intel?token=<player_token>
 ```
 |key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|description|
-|:---:  |:--- |
+|:---   |:--- |
 |`token`|String: A valid token belonging to a Player with the Intel role.|
 
 ##### Successful Response
@@ -238,7 +238,7 @@ HTTP/1.1 200 OK
 }
 ```
 |key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|description|
-|:---:         |:--- |
+|:---          |:--- |
 |`cards`       |Array: An **ordered** collection of `card` objects which are part of the game. These cards go onto the board left-to-right, top-to-bottom.|
 |`-->card.id`  |Integer: The unique identifier for the card.|
 |`-->card.word`|String: The word for the card.|

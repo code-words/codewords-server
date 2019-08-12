@@ -1,4 +1,5 @@
 class GameDataChannel < ApplicationCable::Channel
+  include LobbyActions
   on_subscribe :welcome_player
 
   def subscribed

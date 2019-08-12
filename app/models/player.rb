@@ -33,4 +33,12 @@ class Player < ApplicationRecord
       nil
     end
   end
+
+  def is_intel?
+    if role
+      intel?
+    else
+      nil
+    end
+  end
 end

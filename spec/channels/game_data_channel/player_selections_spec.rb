@@ -87,7 +87,7 @@ describe GameDataChannel, type: :channel do
     stub_connection current_player: player
     subscription = subscribe
 
-    expect{subscription.select_team({"role" => "intel"})}
+    expect{subscription.select_role({"role" => "intel"})}
       .to have_broadcasted_to(game)
       .from_channel(GameDataChannel)
       .once

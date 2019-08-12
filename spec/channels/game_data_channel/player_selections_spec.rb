@@ -26,4 +26,22 @@ describe GameDataChannel, type: :channel do
     expect(player.red?).to eq(true)
     expect(player.intel?).to eq(nil)
   end
+
+  xit 'allows a player to select their role' do
+  end
+
+  xit 'rejects team/role selections once the game has started' do
+  end
+
+  xit 'rejects a team selection if the team is full' do
+  end
+
+  xit 'rejects a role selection if there are no more slots available for that role' do
+  end
+
+  xit 'rejects a team selection if that team already has the sending player\'s role' do
+  end
+
+  xit 'rejects a role selection if that role is taken for the current team' do
+  end
 end

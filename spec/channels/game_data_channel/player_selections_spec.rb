@@ -261,4 +261,52 @@ describe GameDataChannel, type: :channel do
     player.reload
     expect(player.role).to eq(nil)
   end
+
+  it 'does not prevent player from changing team if their current team is full' do
+    archer = game.players.create(user: User.create(name: "Archer"), team: :red)
+    player = game.players.create(user: User.create(name: "Cheryl"), team: :red)
+    stub_connection current_player: player
+    subscription = subscribe
+
+    expect{subscription.select_team({"team" => "blue"})}
+      .to have_broadcasted_to(game)
+      .from_channel(GameDataChannel)
+      .once
+      .with{ |data|
+        message = JSON.parse(data[:message], symbolize_names: true)
+        expect(message[:type]).to eq("player-update")
+
+        payload = message[:data]
+        expect(payload[:id]).to eq(player.id)
+        expect(payload[:isBlueTeam]).to eq(true)
+        expect(payload[:isIntel]).to eq(nil)
+      }
+
+    player.reload
+    expect(player.blue?).to eq(true)
+  end
+
+  it 'does not prevent player from changing role if their current role is full' do
+    archer = game.players.create(user: User.create(name: "Archer"), role: :intel)
+    player = game.players.create(user: User.create(name: "Cheryl"), role: :intel)
+    stub_connection current_player: player
+    subscription = subscribe
+
+    expect{subscription.select_role({"role" => "spy"})}
+      .to have_broadcasted_to(game)
+      .from_channel(GameDataChannel)
+      .once
+      .with{ |data|
+        message = JSON.parse(data[:message], symbolize_names: true)
+        expect(message[:type]).to eq("player-update")
+
+        payload = message[:data]
+        expect(payload[:id]).to eq(player.id)
+        expect(payload[:isBlueTeam]).to eq(nil)
+        expect(payload[:isIntel]).to eq(false)
+      }
+
+    player.reload
+    expect(player.spy?).to eq(true)
+  end
 end

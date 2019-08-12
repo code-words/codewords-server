@@ -10,10 +10,25 @@ describe GameDataChannel, type: :channel do
   end
 
   it 'subscribes to a room' do
+    expect(@player.subscribed?).to eq(false)
+
     subscribe
 
     expect(subscription).to be_confirmed
     expect(subscription).to have_stream_for(game)
+
+    @player.reload
+    expect(@player.subscribed?).to eq(true)
+  end
+
+  it 'unsubscribes from a room' do
+    subscribe
+    unsubscribe
+
+    expect(subscription).to_not have_stream_for(game)
+
+    @player.reload
+    expect(@player.subscribed?).to eq(false)
   end
 
   it 'broadcasts joining player info' do

@@ -52,9 +52,9 @@ describe GameDataChannel, type: :channel do
   end
 
   it 'rejects team/role selections once the game has started' do
-    archer = game.players.create(user: User.create(name: "Archer"))
-    lana = game.players.create(user: User.create(name: "Lana"))
-    cyril = game.players.create(user: User.create(name: "Cyril"))
+    archer = game.players.create(user: User.create(name: "Archer"), subscribed: true)
+    lana = game.players.create(user: User.create(name: "Lana"), subscribed: true)
+    cyril = game.players.create(user: User.create(name: "Cyril"), subscribed: true)
     player = game.players.create(user: User.create(name: "Cheryl"))
     stub_connection current_player: player
     subscription = subscribe

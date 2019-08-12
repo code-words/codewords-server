@@ -74,4 +74,15 @@ class Player < ApplicationRecord
         player.team == team && player.role == role
       end
     end
+
+    def err(snip = nil)
+      {
+        team_full: "The #{snip} team is full.",
+        team_intel_full: "The #{snip} team already has a player with the Intel role.",
+        team_spies_full: "The #{snip} team doesn't have room for more Spy players.",
+        intel_full: "There are already two Intel players.",
+        spies_full: "There is no more room for Spy players.",
+        game_started: "Unable to change #{snip}. The game has already begun."
+      }
+    end
 end

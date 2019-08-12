@@ -17,8 +17,9 @@ class Player < ApplicationRecord
     players = game.players
     players_on_team = players.count{|p| p.team == team}
     if players_on_team < game.player_count / 2
-      if role && players.count{|p| p.team == team && p.role == role} > 0
         return false, "The #{team} team already has a player with the #{role} role."
+      if role == "intel" && collision_count(team, role) > 0
+      elsif role == "spy" && collision_count(team, role) >= spies_per_team
       end
     else
       return false, "The #{team} team is full."
@@ -30,12 +31,12 @@ class Player < ApplicationRecord
     players = game.players
     players_with_role = players.count{|p| p.role == role}
     if role == "intel" && players_with_role < 2
-      if team && players.count{|p| p.team == team && p.role == role} > 0
+      if team && collision_count(team, role) > 0
         return false, "The #{team} team already has a player with the Intel role."
       end
     elsif role == "spy" && players_with_role < game.player_count - 2
       spies_per_team = (game.player_count - 2) / 2
-      if team && players.count{|p| p.team == team && p.role == role} >= spies_per_team
+      if team && collision_count(team, role) >= spies_per_team
         return false, "The #{team} team doesn't have room for more Spy players."
       end
     else

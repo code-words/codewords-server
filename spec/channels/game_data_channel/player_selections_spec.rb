@@ -24,7 +24,7 @@ describe GameDataChannel, type: :channel do
 
     player.reload
     expect(player.red?).to eq(true)
-    expect(player.intel?).to eq(nil)
+    expect(player.role).to eq(nil)
   end
 
   xit 'allows a player to select their role' do

@@ -4,14 +4,16 @@ module LobbyActions
 
     if current_player.can_join_team? data["team"]
       current_player.team = data["team"]
-      approve_selection
+      approve_selection(team: data["team"])
     else
       deny_selection(team: data["team"])
     end
   end
 
   private
-    def approve_selection
+    def approve_selection(team: nil, role: nil)
+      current_player.update(team: team) if team
+      current_player.update(role: role) if role
       payload = {
         type: "player-update",
         data: {

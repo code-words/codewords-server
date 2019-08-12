@@ -25,4 +25,12 @@ class Player < ApplicationRecord
       return false
     end
   end
+
+  def is_blue_team?
+    if team
+      blue?
+    else
+      nil
+    end
+  end
 end

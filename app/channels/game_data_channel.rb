@@ -135,6 +135,8 @@ class GameDataChannel < ApplicationCable::Channel
         data: {
           id: current_player.id,
           name: current_player.name,
+          isBlueTeam: current_player.is_blue_team?,
+          isIntel: current_player.is_intel?,
           playerRoster: compose_players(current_player.game)
         }
       }

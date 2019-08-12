@@ -27,7 +27,28 @@ describe GameDataChannel, type: :channel do
     expect(player.role).to eq(nil)
   end
 
-  xit 'allows a player to select their role' do
+  it 'allows a player to select their role' do
+    player = game.players.create(user: User.create(name: "Cheryl"))
+    stub_connection current_player: player
+    subscription = subscribe
+
+    expect{subscription.select_role({"role" => "intel"})}
+      .to have_broadcasted_to(game)
+      .from_channel(GameDataChannel)
+      .once
+      .with{ |data|
+        message = JSON.parse(data[:message], symbolize_names: true)
+        expect(message[:type]).to eq("player-update")
+
+        payload = message[:data]
+        expect(payload[:id]).to eq(player.id)
+        expect(payload[:isBlueTeam]).to eq(nil)
+        expect(payload[:isIntel]).to eq(true)
+      }
+
+    player.reload
+    expect(player.team).to eq(nil)
+    expect(player.intel?).to eq(true)
   end
 
   xit 'rejects team/role selections once the game has started' do

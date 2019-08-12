@@ -10,10 +10,20 @@ module LobbyActions
     end
   end
 
+  def select_role(data)
+    current_player.reload
+
+    if current_player.can_join_role? data["role"]
+      current_player.role = data["role"]
+      approve_selection(role: data["role"])
+    else
+      deny_selection(role: data["role"])
+    end
+  end
+
   private
     def approve_selection(team: nil, role: nil)
-      current_player.update(team: team) if team
-      current_player.update(role: role) if role
+      current_player.save
       payload = {
         type: "player-update",
         data: {

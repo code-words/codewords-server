@@ -63,4 +63,12 @@ class Player < ApplicationRecord
       nil
     end
   end
+
+  private
+    def collision_count(team, role)
+      players = game.players
+      players.count do |player|
+        player.team == team && player.role == role
+      end
+    end
 end

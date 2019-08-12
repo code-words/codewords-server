@@ -88,22 +88,13 @@ class GameDataChannel < ApplicationCable::Channel
     ##    ## ##     ## ##     ## ##        ##     ## ##    ## ##       ##    ##  ##    ##
      ######   #######  ##     ## ##         #######   ######  ######## ##     ##  ######
 
-    def compose_roster(game)
-      game.players.map do |p|
-        {
-          id: p.id,
-          name: p.name
-        }
-      end
-    end
-
     def compose_players(game)
       game.players.map do |p|
         {
           id: p.id,
           name: p.name,
-          isBlueTeam: p.blue?,
-          isIntel: p.intel?
+          isBlueTeam: p.is_blue_team?,
+          isIntel: p.is_intel?
         }
       end
     end

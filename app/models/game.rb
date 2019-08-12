@@ -96,6 +96,10 @@ class Game < ApplicationRecord
     card_ids.include? id.to_i
   end
 
+  def started?
+    game_cards.count > 0
+  end
+
   private
 
      ######      ###    ##     ## ########

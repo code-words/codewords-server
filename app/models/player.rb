@@ -18,12 +18,12 @@ class Player < ApplicationRecord
     players_on_team = players.count{|p| p.team == team}
     if players_on_team < game.player_count / 2
       if role && players.count{|p| p.team == team && p.role == role} > 0
-        return false
+        return false, "The #{team} team already has a player with the #{role} role."
       end
     else
-      return false
+      return false, "The #{team} team is full."
     end
-    return true
+    return true, ""
   end
 
   def can_join_role?(role)
@@ -31,17 +31,17 @@ class Player < ApplicationRecord
     players_with_role = players.count{|p| p.role == role}
     if role == "intel" && players_with_role < 2
       if team && players.count{|p| p.team == team && p.role == role} > 0
-        return false
+        return false, "The #{team} team already has a player with the Intel role."
       end
     elsif role == "spy" && players_with_role < game.player_count - 2
       spies_per_team = (game.player_count - 2) / 2
       if team && players.count{|p| p.team == team && p.role == role} >= spies_per_team
-        return false
+        return false, "The #{team} team doesn't have room for more Spy players."
       end
     else
-      return false
+      return false, "The #{team} team is full."
     end
-    return true
+    return true, ""
   end
 
   def is_blue_team?

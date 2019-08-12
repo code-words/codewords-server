@@ -48,6 +48,8 @@ describe GameDataChannel, type: :channel do
         payload = message[:data]
         expect(payload[:id]).to eq(@player.id)
         expect(payload[:name]).to eq(@player.name)
+        expect(payload[:isBlueTeam]).to eq(nil)
+        expect(payload[:isIntel]).to eq(nil)
 
         players = payload[:playerRoster]
         player_ids = []
@@ -55,6 +57,8 @@ describe GameDataChannel, type: :channel do
         players.each do |player|
           expect(player).to have_key(:id)
           expect(player).to have_key(:name)
+          expect(player).to have_key(:isBlueTeam)
+          expect(player).to have_key(:isIntel)
           player_ids << player[:id]
         end
 

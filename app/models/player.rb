@@ -39,7 +39,11 @@ class Player < ApplicationRecord
         return false, "The #{team} team doesn't have room for more Spy players."
       end
     else
-      return false, "The #{team} team is full."
+      if role == "intel"
+        return false, "There are already two Intel players."
+      else
+        return false, "There is no more room for Spy players."
+      end
     end
     return true, ""
   end

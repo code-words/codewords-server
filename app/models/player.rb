@@ -19,12 +19,12 @@ class Player < ApplicationRecord
     if players_on_team < game.player_count / 2
       spies_per_team = (game.player_count - 2) / 2
       if role == "intel" && collision_count(team, role) > 0
-        return false, "The #{team} team already has a player with the Intel role."
+        return false, err(team)[:team_intel_full]
       elsif role == "spy" && collision_count(team, role) >= spies_per_team
-        return false, "The #{team} team doesn't have room for more Spy players."
+        return false, err(team)[:team_spies_full]
       end
     else
-      return false, "The #{team} team is full."
+      return false, err(team)[:team_full]
     end
     return true, ""
   end
@@ -34,18 +34,18 @@ class Player < ApplicationRecord
     players_with_role = players.count{|p| p.role == role}
     if role == "intel" && players_with_role < 2
       if team && collision_count(team, role) > 0
-        return false, "The #{team} team already has a player with the Intel role."
+        return false, err(team)[:team_intel_full]
       end
     elsif role == "spy" && players_with_role < game.player_count - 2
       spies_per_team = (game.player_count - 2) / 2
       if team && collision_count(team, role) >= spies_per_team
-        return false, "The #{team} team doesn't have room for more Spy players."
+        return false, err(team)[:team_spies_full]
       end
     else
       if role == "intel"
-        return false, "There are already two Intel players."
+        return false, err[:intel_full]
       else
-        return false, "There is no more room for Spy players."
+        return false, err[:spies_full]
       end
     end
     return true, ""

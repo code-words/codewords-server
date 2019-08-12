@@ -626,5 +626,7 @@ This message is broadcast to all players after any illegal action is performed b
   - "\<player name\> attempted to submit an invalid hint"
 - A Spy player submits a guess with a card ID not present in this game
   - "\<player name\> attempted to submit a guess for a card not in this game"
+- A Player attempts to select a role or team that is full.
+  - Various: see [`Player#err`](app/models/player.rb)
 
 </details>

@@ -38,4 +38,16 @@ module LobbyActions
       }
       broadcast_message payload
     end
+
+    def deny_selection(message)
+      payload = {
+        type: "illegal-action",
+        data: {
+          error: message,
+          category: "personal",
+          byPlayerId: current_player.id
+        }
+      }
+      broadcast_message payload
+    end
 end

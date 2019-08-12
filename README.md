@@ -284,7 +284,7 @@ HTTP/1.1 401 Unauthorized
 
 ### Player Joined
 
-This message is broadcast to the game channel whenever a player joins the game. It contains the name and ID of the player who joined, as well as a roster of all players currently in the game.
+This message is broadcast to the game channel whenever a player joins the game. It contains the name, ID, team, and role of the player who joined, as well as a roster of all players currently in the game.
 
 ##### Payload
 
@@ -294,10 +294,14 @@ This message is broadcast to the game channel whenever a player joins the game. 
   data: {
     id: 0,
     name: "name",
+    isBlueTeam: true,
+    isIntel: true,
     playerRoster: [
       {
         id: 0,
-        name: "name"
+        name: "name",
+        isBlueTeam: true,
+        isIntel: true,
       },
       ...
     ]
@@ -311,9 +315,13 @@ This message is broadcast to the game channel whenever a player joins the game. 
 |`data`             |Object: The data payload of the message.|
 |`data.id`          |Integer: The unique id of the player who joined.|
 |`data.name`        |String: The name of the player who joined.|
+|`data.isBlueTeam`  |Boolean: `null` if the player has not been assigned a team, `true` if the player is on the blue team, `false` if they're on the red team.|
+|`data.isIntel`     |Boolean: `null` if the player has not been assigned a role, `true` if the player has the Intel role, `false` if they have the Spy role.|
 |`data.playerRoster`|Array: A collection of `player` objects for all players currently in the game, **ordered by** the time they joined the lobby.|
 |`-->player.id`     |Integer: The unique id of the given player.|
 |`-->player.name`   |String: The name of the given player.|
+|`-->player.isBlueTeam`|Boolean: `null` if the player has not been assigned a team, `true` if the player is on the blue team, `false` if they're on the red team.|
+|`-->player.isIntel`   |Boolean: `null` if the player has not been assigned a role, `true` if the player has the Intel role, `false` if they have the Spy role.|
 
 ---
 

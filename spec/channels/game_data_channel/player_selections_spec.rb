@@ -180,6 +180,51 @@ describe GameDataChannel, type: :channel do
     expect(player.team).to eq(nil)
   end
 
-  xit 'rejects a role selection if that role is taken for the current team' do
+  it 'rejects a role selection if selection is intel and team already has intel' do
+    archer = game.players.create(user: User.create(name: "Archer"), team: :red, role: :intel)
+    player = game.players.create(user: User.create(name: "Cheryl"), team: :red)
+    stub_connection current_player: player
+    subscription = subscribe
+
+    expect{subscription.select_role({"role" => "intel"})}
+      .to have_broadcasted_to(game)
+      .from_channel(GameDataChannel)
+      .once
+      .with{ |data|
+        message = JSON.parse(data[:message], symbolize_names: true)
+        expect(message[:type]).to eq("illegal-action")
+
+        payload = message[:data]
+        expect(payload[:error]).to eq("The red team already has a player with the Intel role.")
+        expect(payload[:category]).to eq("personal")
+        expect(payload[:byPlayerId]).to eq(player.id)
+      }
+
+    player.reload
+    expect(player.role).to eq(nil)
+  end
+
+  it 'rejects a role selection if selection is spy and team is full of spies' do
+    archer = game.players.create(user: User.create(name: "Archer"), team: :red, role: :spy)
+    player = game.players.create(user: User.create(name: "Cheryl"), team: :red)
+    stub_connection current_player: player
+    subscription = subscribe
+
+    expect{subscription.select_role({"role" => "spy"})}
+      .to have_broadcasted_to(game)
+      .from_channel(GameDataChannel)
+      .once
+      .with{ |data|
+        message = JSON.parse(data[:message], symbolize_names: true)
+        expect(message[:type]).to eq("illegal-action")
+
+        payload = message[:data]
+        expect(payload[:error]).to eq("The red team doesn't have room for more Spy players.")
+        expect(payload[:category]).to eq("personal")
+        expect(payload[:byPlayerId]).to eq(player.id)
+      }
+
+    player.reload
+    expect(player.role).to eq(nil)
   end
 end

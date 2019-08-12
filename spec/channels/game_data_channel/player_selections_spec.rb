@@ -80,7 +80,7 @@ describe GameDataChannel, type: :channel do
     expect(player.role).to eq(nil)
   end
 
-  it 'rejects a role selection if there are no more slots available for that role' do
+  it 'rejects a role selection if intel and there are no more slots available for that role' do
     archer = game.players.create(user: User.create(name: "Archer"), role: :intel)
     lana = game.players.create(user: User.create(name: "Lana"), role: :intel)
     player = game.players.create(user: User.create(name: "Cheryl"))
@@ -97,6 +97,32 @@ describe GameDataChannel, type: :channel do
 
         payload = message[:data]
         expect(payload[:error]).to eq("There are already two Intel players.")
+        expect(payload[:category]).to eq("personal")
+        expect(payload[:byPlayerId]).to eq(player.id)
+      }
+
+    player.reload
+    expect(player.team).to eq(nil)
+    expect(player.role).to eq(nil)
+  end
+
+  it 'rejects a role selection if spy and there are no more slots available for that role' do
+    archer = game.players.create(user: User.create(name: "Archer"), role: :spy)
+    lana = game.players.create(user: User.create(name: "Lana"), role: :spy)
+    player = game.players.create(user: User.create(name: "Cheryl"))
+    stub_connection current_player: player
+    subscription = subscribe
+
+    expect{subscription.select_role({"role" => "spy"})}
+      .to have_broadcasted_to(game)
+      .from_channel(GameDataChannel)
+      .once
+      .with{ |data|
+        message = JSON.parse(data[:message], symbolize_names: true)
+        expect(message[:type]).to eq("illegal-action")
+
+        payload = message[:data]
+        expect(payload[:error]).to eq("There is no more room for Spy players.")
         expect(payload[:category]).to eq("personal")
         expect(payload[:byPlayerId]).to eq(player.id)
       }

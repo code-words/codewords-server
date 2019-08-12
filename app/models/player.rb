@@ -14,6 +14,7 @@ class Player < ApplicationRecord
   end
 
   def can_join_team?(team)
+    return false, err("team")[:game_started] if game.started?
     players = game.players
     players_on_team = players.count{|p| p.team == team}
     if players_on_team < game.player_count / 2
@@ -30,6 +31,7 @@ class Player < ApplicationRecord
   end
 
   def can_join_role?(role)
+    return false, err("role")[:game_started] if game.started?
     players = game.players
     players_with_role = players.count{|p| p.role == role}
     if role == "intel" && players_with_role < 2

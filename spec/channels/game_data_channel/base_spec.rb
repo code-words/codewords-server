@@ -31,6 +31,14 @@ describe GameDataChannel, type: :channel do
     expect(@player.subscribed?).to eq(false)
   end
 
+  it 'rejects players rejoining after game over' do
+    game.update_attribute(:over, true)
+
+    subscribe
+
+    expect(subscription).to be_rejected
+  end
+
   it 'broadcasts joining player info' do
     expect{ subscribe }.to have_broadcasted_to(game)
       .from_channel(GameDataChannel)

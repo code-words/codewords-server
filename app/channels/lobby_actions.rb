@@ -33,7 +33,7 @@ module LobbyActions
           name: current_player.name,
           isBlueTeam: current_player.is_blue_team?,
           isIntel: current_player.is_intel?,
-          playerRoster: compose_roster(current_player.game)
+          playerRoster: compose_players(current_player.game)
         }
       }
       broadcast_message payload

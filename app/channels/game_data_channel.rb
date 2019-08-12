@@ -135,7 +135,7 @@ class GameDataChannel < ApplicationCable::Channel
         data: {
           id: current_player.id,
           name: current_player.name,
-          playerRoster: compose_roster(current_player.game)
+          playerRoster: compose_players(current_player.game)
         }
       }
       broadcast_message payload

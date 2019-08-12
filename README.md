@@ -602,6 +602,7 @@ This message is broadcast to all players after any illegal action is performed b
   type: 'illegal-action',
   data: {
     error: "<descriptive message>",
+    category: "personal",
     byPlayerId: 1
   }
 }
@@ -612,6 +613,7 @@ This message is broadcast to all players after any illegal action is performed b
 |`type`           |String: The type of message being broadcast.|
 |`data`           |Object: The data payload of the message.|
 |`data.error`     |String: The descriptive error message.|
+|`data.category`  |String: The category of error. `personal` for messages that should only be displayed to the affected player, `public` for messages that should be broadcast to the lobby, or `info` for messages that should only output to the browser console with `console.warn()`.|
 |`data.byPlayerId`|Integer: The ID of the player who performed the illegal action.|
 
 <details><summary>The potential illegal actions that are anticipated and caught are:</summary>

@@ -1,23 +1,25 @@
 module LobbyActions
   def select_team(data)
     current_player.reload
+    approved, message = current_player.can_join_team? data["team"]
 
-    if current_player.can_join_team? data["team"]
+    if approved
       current_player.team = data["team"]
       approve_selection(team: data["team"])
     else
-      deny_selection(team: data["team"])
+      deny_selection(message)
     end
   end
 
   def select_role(data)
     current_player.reload
+    approved, message = current_player.can_join_role? data["role"]
 
-    if current_player.can_join_role? data["role"]
+    if approved
       current_player.role = data["role"]
       approve_selection(role: data["role"])
     else
-      deny_selection(role: data["role"])
+      deny_selection(message)
     end
   end
 

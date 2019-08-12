@@ -51,7 +51,41 @@ describe GameDataChannel, type: :channel do
     expect(player.intel?).to eq(true)
   end
 
-  xit 'rejects team/role selections once the game has started' do
+  it 'rejects team/role selections once the game has started' do
+    archer = game.players.create(user: User.create(name: "Archer"))
+    lana = game.players.create(user: User.create(name: "Lana"))
+    cyril = game.players.create(user: User.create(name: "Cyril"))
+    player = game.players.create(user: User.create(name: "Cheryl"))
+    stub_connection current_player: player
+    subscription = subscribe
+
+    expect{subscription.select_team({"team" => "red"})}
+      .to have_broadcasted_to(game)
+      .from_channel(GameDataChannel)
+      .once
+      .with{ |data|
+        message = JSON.parse(data[:message], symbolize_names: true)
+        expect(message[:type]).to eq("illegal-action")
+
+        payload = message[:data]
+        expect(payload[:error]).to eq("Unable to change team. The game has already begun.")
+        expect(payload[:category]).to eq("personal")
+        expect(payload[:byPlayerId]).to eq(player.id)
+      }
+
+    expect{subscription.select_role({"role" => "intel"})}
+      .to have_broadcasted_to(game)
+      .from_channel(GameDataChannel)
+      .once
+      .with{ |data|
+        message = JSON.parse(data[:message], symbolize_names: true)
+        expect(message[:type]).to eq("illegal-action")
+
+        payload = message[:data]
+        expect(payload[:error]).to eq("Unable to change role. The game has already begun.")
+        expect(payload[:category]).to eq("personal")
+        expect(payload[:byPlayerId]).to eq(player.id)
+      }
   end
 
   it 'rejects a team selection if the team is full' do

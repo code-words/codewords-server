@@ -58,6 +58,7 @@ describe GameDataChannel, type: :channel do
     player = game.players.create(user: User.create(name: "Cheryl"))
     stub_connection current_player: player
     subscription = subscribe
+    game.establish!
 
     expect{subscription.select_team({"team" => "red"})}
       .to have_broadcasted_to(game)

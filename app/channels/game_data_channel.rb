@@ -34,19 +34,9 @@ class GameDataChannel < ApplicationCable::Channel
         num: hint["numCards"].to_i
       )
 
-      payload = {
-        type: 'hint-provided',
-        data: {
-          isBlueTeam: saved_hint.blue?,
-          hintWord: saved_hint.word,
-          relatedCards: saved_hint.num,
-          currentPlayerId: game.current_player.id
-        }
-      }
-
       game.guesses_remaining = saved_hint.num + 1
       game.save
-      broadcast_message payload
+      provide_hint saved_hint
     end
   end
 
@@ -172,6 +162,20 @@ class GameDataChannel < ApplicationCable::Channel
         data: {
           error: message,
           byPlayerId: current_player.id
+        }
+      }
+      broadcast_message payload
+    end
+
+    def provide_hint(hint)
+      game = current_player.game
+      payload = {
+        type: 'hint-provided',
+        data: {
+          isBlueTeam: hint.blue?,
+          hintWord: hint.word,
+          relatedCards: hint.num,
+          currentPlayerId: game.current_player.id
         }
       }
       broadcast_message payload

@@ -70,6 +70,15 @@ class GameDataChannel < ApplicationCable::Channel
     end
   end
 
+  def start_game
+    game = current_player.game
+    game.reload
+    if all_players_in?(game) && game.game_cards.count == 0
+      game.establish!
+      game_setup
+    end
+  end
+
   private
 
           ##  ######   #######  ##    ##
@@ -144,22 +153,17 @@ class GameDataChannel < ApplicationCable::Channel
       start_game
     end
 
-    def start_game
+    def game_setup
       game = current_player.game
-      game.reload
-      if all_players_in?(game) && game.game_cards.count == 0
-        game.establish!
-
-        payload = {
-          type: "game-setup",
-          data: {
-            cards: compose_cards(game),
-            players: compose_players(game),
-            firstPlayerId: game.current_player.id
-          }
+      payload = {
+        type: "game-setup",
+        data: {
+          cards: compose_cards(game),
+          players: compose_players(game),
+          firstPlayerId: game.current_player.id
         }
-        broadcast_message payload
-      end
+      }
+      broadcast_message payload
     end
 
     def illegal_action(message)

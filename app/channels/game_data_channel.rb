@@ -28,7 +28,7 @@ class GameDataChannel < ApplicationCable::Channel
     else
       game.advance!
 
-      saved_hint = current_player.game.hints.create(
+      saved_hint = game.hints.create(
         team: current_player.team,
         word: hint["hintWord"],
         num: hint["numCards"].to_i
@@ -140,7 +140,6 @@ class GameDataChannel < ApplicationCable::Channel
         }
       }
       broadcast_message payload
-      start_game
     end
 
     def game_setup

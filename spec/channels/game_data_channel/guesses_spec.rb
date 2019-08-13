@@ -14,6 +14,7 @@ describe GameDataChannel, type: :channel do
     spy = @game.players.create(user: User.create(name: "Cheryl"), role: :spy, team: :red)
     stub_connection current_player: spy
     subscription = subscribe
+    @game.establish!
 
     built_player = Player.find(spy.id)
     built_player.update(role: :spy)
@@ -56,6 +57,7 @@ describe GameDataChannel, type: :channel do
     spy = @game.players.create(user: User.create(name: "Cheryl"), role: :intel)
     stub_connection current_player: spy
     subscription = subscribe
+    @game.establish!
 
     @game.current_player = Player.where.not(id: spy.id).first
     @game.guesses_remaining = 1
@@ -81,6 +83,7 @@ describe GameDataChannel, type: :channel do
     random_player = @game.players.create(user: User.create(name: "Cheryl"), role: :intel)
     stub_connection current_player: random_player
     subscription = subscribe
+    @game.establish!
 
     built_player = Player.find(random_player.id)
     built_player.update(role: :intel)
@@ -109,6 +112,7 @@ describe GameDataChannel, type: :channel do
     spy = @game.players.create(user: User.create(name: "Cheryl"), role: :spy, team: :red)
     stub_connection current_player: spy
     subscription = subscribe
+    @game.establish!
 
     built_player = Player.find(spy.id)
     built_player.update(role: :spy)
@@ -142,6 +146,7 @@ describe GameDataChannel, type: :channel do
     spy = @game.players.create(user: User.create(name: "Cheryl"), role: :spy, team: :red)
     stub_connection current_player: spy
     subscription = subscribe
+    @game.establish!
 
     built_player = Player.find(spy.id)
     built_player.update(role: :spy)
@@ -176,6 +181,7 @@ describe GameDataChannel, type: :channel do
     spy = @game.players.create(user: User.create(name: "Cheryl"), role: :spy, team: :red)
     stub_connection current_player: spy
     subscription = subscribe
+    @game.establish!
 
     built_player = Player.find(spy.id)
     built_player.update(role: :spy)
@@ -212,6 +218,7 @@ describe GameDataChannel, type: :channel do
     spy = @game.players.create(user: User.create(name: "Cheryl"), role: :spy, team: :red)
     stub_connection current_player: spy
     subscription = subscribe
+    @game.establish!
 
     built_player = Player.find(spy.id)
     built_player.update(role: :spy)
@@ -248,6 +255,7 @@ describe GameDataChannel, type: :channel do
     spy = @game.players.create(user: User.create(name: "Cheryl"), role: :spy, team: :red)
     stub_connection current_player: spy
     subscription = subscribe
+    @game.establish!
 
     built_player = Player.find(spy.id)
     built_player.update(role: :spy)
@@ -284,6 +292,7 @@ describe GameDataChannel, type: :channel do
     spy = @game.players.create(user: User.create(name: "Cheryl"), role: :spy, team: :red)
     stub_connection current_player: spy
     subscription = subscribe
+    @game.establish!
 
     built_player = Player.find(spy.id)
     built_player.update(role: :spy)
@@ -327,6 +336,7 @@ describe GameDataChannel, type: :channel do
     spy = @game.players.create(user: User.create(name: "Cheryl"), role: :spy, team: :red)
     stub_connection current_player: spy
     subscription = subscribe
+    @game.establish!
 
     built_player = Player.find(spy.id)
     built_player.update(role: :spy)
@@ -369,6 +379,7 @@ describe GameDataChannel, type: :channel do
     spy = @game.players.create(user: User.create(name: "Cheryl"), role: :spy, team: :red)
     stub_connection current_player: spy
     subscription = subscribe
+    @game.establish!
 
     built_player = Player.find(spy.id)
     built_player.update(role: :spy)

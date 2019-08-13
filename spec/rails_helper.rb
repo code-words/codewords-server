@@ -97,6 +97,22 @@ Shoulda::Matchers.configure do |config|
   end
 end
 
+DBQueryMatchers.configure do |config|
+  # config.ignores = [/SHOW TABLES LIKE/]
+  config.schemaless = true
+
+  # the payload argument is described here:
+  # http://edgeguides.rubyonrails.org/active_support_instrumentation.html#sql-active-record
+  # config.on_query_counted do |payload|
+  #   # do something arbitrary with the query
+  # end
+
+  config.log_backtrace = true
+  config.backtrace_filter = Proc.new do |backtrace|
+    backtrace.select { |line| line.start_with?(Rails.root.to_s) }
+  end
+end
+
 require 'database_cleaner'
 DatabaseCleaner.strategy = :truncation
 require './db/seeds/cards'

@@ -87,4 +87,37 @@ describe GameDataChannel, type: :channel do
         expect(payload).to have_key(:firstPlayerId)
       }
   end
+
+  it 'respects player team/role selections when present' do
+    subscribe
+
+    player2 = Player.create(game: game, user: User.create(name: "Lana"), team: :red, role: :intel)
+    stub_connection current_player: player2
+    subscribe
+
+    player3 = Player.create(game: game, user: User.create(name: "Cyril"), team: :red, role: :spy)
+    stub_connection current_player: player3
+    subscribe
+
+    player4 = Player.create(game: game, user: User.create(name: "Cheryl"), team: :blue, role: :intel)
+    stub_connection current_player: player4
+    subscription = subscribe
+
+    expect{ subscription.start_game }.to make_database_queries(count: 1, matching: "UPDATE \"players\"")
+      .and have_broadcasted_to(game)
+      .from_channel(GameDataChannel)
+      .once
+      .with{ |data|
+        message = JSON.parse(data[:message], symbolize_names: true)
+        expect(message[:type]).to eq("game-setup")
+        payload = message[:data]
+
+        archer = payload[:players].find do |player|
+          player[:name] == "Archer"
+        end
+
+        expect(archer[:isBlueTeam]).to eq(true)
+        expect(archer[:isIntel]).to eq(false)
+      }
+  end
 end

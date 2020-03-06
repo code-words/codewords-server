@@ -47,6 +47,7 @@ group :development, :test do
   gem 'awesome_print'
   gem 'orderly'
   gem 'action-cable-testing'
+  gem 'db-query-matchers'
 end
 
 group :development do

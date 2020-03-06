@@ -60,14 +60,15 @@ At this point, we have everything we need for our Rails environment. If you wish
 
 ## Websockets Message Events
 
-|From Server                      |From Client              |
-|:---:                            |:---:                    |
-|[Player Joined](#player-joined)  |                         |
-|[Game Started](#game-started)    |                         |
-|[Hint Provided](#hint-provided)  |[Hint Sent](#hint-sent)  |
-|[Board Update](#board-update)    |[Guess Sent](#guess-sent)|
-|[Game Over](#game-over)          |                         |
-|[Illegal Action](#illegal-action)|                         |
+|From Server                      |From Client                |
+|:---:                            |:---:                      |
+|[Player Joined](#player-joined)  |[Select Team](#select-team)|
+|[Player Update](#player-update)  |[Select Role](#select-role)|
+|[Game Started](#game-started)    |[Start Game](#start-game)  |
+|[Hint Provided](#hint-provided)  |[Hint Sent](#hint-sent)    |
+|[Board Update](#board-update)    |[Guess Sent](#guess-sent)  |
+|[Game Over](#game-over)          |                           |
+|[Illegal Action](#illegal-action)|                           |
 
 ---
 
@@ -85,7 +86,7 @@ POST /api/v1/games
 }
 ```
 |key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|description|
-|:---: |:--- |
+|:---  |:--- |
 |`name`|String: The username that the requesting user would like to use during the game|
 
 ##### Successful Response
@@ -101,7 +102,7 @@ HTTP/1.1 201 Created
 }
 ```
 |key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|description|
-|:---:        |:--- |
+|:---         |:--- |
 |`invite_code`|String: A code which can be shared with other players. They will use this code to join the game.|
 |`id`         |Integer: The unique id for the player.|
 |`name`       |String: A confirmation that the requested name was indeed assigned to the player.|
@@ -138,7 +139,7 @@ POST /api/v1/games/:invite_code/players
 }
 ```
 |key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|description|
-|:---:         |:--- |
+|:---          |:--- |
 |`:invite_code`|String: (Within URI) The invite code provided by the person inviting the requesting user to their existing game.|
 |`name`        |String: The username that the requesting user would like to use during the game|
 
@@ -154,7 +155,7 @@ HTTP/1.1 200 OK
 }
 ```
 |key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|description|
-|:---:  |:--- |
+|:---   |:--- |
 |`id`   |Integer: The unique id for the player.|
 |`name` |String: A confirmation that the requested name was indeed assigned to the player.|
 |`token`|String: A token unique to the current player, which can be used to identify them in future requests to the server.|
@@ -218,7 +219,7 @@ Request the Intel data for a game, allowing the player to see which cards belong
 GET /api/v1/intel?token=<player_token>
 ```
 |key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|description|
-|:---:  |:--- |
+|:---   |:--- |
 |`token`|String: A valid token belonging to a Player with the Intel role.|
 
 ##### Successful Response
@@ -237,7 +238,7 @@ HTTP/1.1 200 OK
 }
 ```
 |key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|description|
-|:---:         |:--- |
+|:---          |:--- |
 |`cards`       |Array: An **ordered** collection of `card` objects which are part of the game. These cards go onto the board left-to-right, top-to-bottom.|
 |`-->card.id`  |Integer: The unique identifier for the card.|
 |`-->card.word`|String: The word for the card.|
@@ -284,7 +285,7 @@ HTTP/1.1 401 Unauthorized
 
 ### Player Joined
 
-This message is broadcast to the game channel whenever a player joins the game. It contains the name and ID of the player who joined, as well as a roster of all players currently in the game.
+This message is broadcast to the game channel whenever a player joins the game. It contains the name, ID, team, and role of the player who joined, as well as a roster of all players currently in the game.
 
 ##### Payload
 
@@ -294,10 +295,14 @@ This message is broadcast to the game channel whenever a player joins the game. 
   data: {
     id: 0,
     name: "name",
+    isBlueTeam: true,
+    isIntel: true,
     playerRoster: [
       {
         id: 0,
-        name: "name"
+        name: "name",
+        isBlueTeam: true,
+        isIntel: true,
       },
       ...
     ]
@@ -311,15 +316,112 @@ This message is broadcast to the game channel whenever a player joins the game. 
 |`data`             |Object: The data payload of the message.|
 |`data.id`          |Integer: The unique id of the player who joined.|
 |`data.name`        |String: The name of the player who joined.|
+|`data.isBlueTeam`  |Boolean: `null` if the player has not been assigned a team, `true` if the player is on the blue team, `false` if they're on the red team.|
+|`data.isIntel`     |Boolean: `null` if the player has not been assigned a role, `true` if the player has the Intel role, `false` if they have the Spy role.|
 |`data.playerRoster`|Array: A collection of `player` objects for all players currently in the game, **ordered by** the time they joined the lobby.|
 |`-->player.id`     |Integer: The unique id of the given player.|
 |`-->player.name`   |String: The name of the given player.|
+|`-->player.isBlueTeam`|Boolean: `null` if the player has not been assigned a team, `true` if the player is on the blue team, `false` if they're on the red team.|
+|`-->player.isIntel`   |Boolean: `null` if the player has not been assigned a role, `true` if the player has the Intel role, `false` if they have the Spy role.|
+
+---
+
+### Select Team
+
+This message is sent from the game client to the server by any player before the game has started. The payload contains the team that the player would like to join.
+
+##### Call
+
+```js
+cable.selectTeam({
+  team: "red"
+})
+```
+
+|key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|Description|
+|:---      |:--- |
+|`team`|String: The team the player would like to play on. "red" or "blue"|
+
+---
+
+### Select Role
+
+This message is sent from the game client to the server by any player before the game has started. The payload contains the role that the player would like to play.
+
+##### Call
+
+```js
+cable.selectRole({
+  role: "intel"
+})
+```
+
+|key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|Description|
+|:---      |:--- |
+|`role`|String: The role the player would like to have. "intel" or "spy"|
+
+---
+
+### Player Update
+
+This message is broadcast to the game channel whenever a player makes a team or role selection. It contains the name, ID, team, and role of the player who changed, as well as a roster of all players currently in the game.
+
+##### Payload
+
+```js
+{
+  type: "player-update",
+  data: {
+    id: 0,
+    name: "name",
+    isBlueTeam: true,
+    isIntel: true,
+    playerRoster: [
+      {
+        id: 0,
+        name: "name",
+        isBlueTeam: true,
+        isIntel: true,
+      },
+      ...
+    ]
+  }
+}
+```
+
+|key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|Description|
+|:---                  |:--- |
+|`type`                |String: The type of message being broadcast.|
+|`data`                |Object: The data payload of the message.|
+|`data.id`             |Integer: The unique id of the player who joined.|
+|`data.name`           |String: The name of the player who joined.|
+|`data.isBlueTeam`     |Boolean: `null` if the player has not been assigned a team, `true` if the player is on the blue team, `false` if they're on the red team.|
+|`data.isIntel`        |Boolean: `null` if the player has not been assigned a role, `true` if the player has the Intel role, `false` if they have the Spy role.|
+|`data.playerRoster`   |Array: A collection of `player` objects for all players currently in the game, **ordered by** the time they joined the lobby.|
+|`-->player.id`        |Integer: The unique id of the given player.|
+|`-->player.name`      |String: The name of the given player.|
+|`-->player.isBlueTeam`|Boolean: `null` if the player has not been assigned a team, `true` if the player is on the blue team, `false` if they're on the red team.|
+|`-->player.isIntel`   |Boolean: `null` if the player has not been assigned a role, `true` if the player has the Intel role, `false` if they have the Spy role.|
+
+---
+
+### Start Game
+
+This message is sent from the game client to the server by any player after all players have joined, while the game is still on the lobby screen.
+
+##### Call
+
+```js
+cable.startGame()
+```
+
+No payload should be provided with this message.
 
 ---
 
 ### Game Started
 
-This message is broadcast to the game channel once the final player has joined the lobby. It is broadcast _after_ the [player joined](#player-joined) message generated by that player.
+This message is broadcast to the game channel after all players have joined the lobby and any player sends the [`start_game`](#start-game) message. It is broadcast _after_ the [player joined](#player-joined) message generated by that player.
 
 ##### Payload
 
@@ -515,6 +617,7 @@ This message is broadcast to all players after any illegal action is performed b
   type: 'illegal-action',
   data: {
     error: "<descriptive message>",
+    category: "personal",
     byPlayerId: 1
   }
 }
@@ -525,6 +628,7 @@ This message is broadcast to all players after any illegal action is performed b
 |`type`           |String: The type of message being broadcast.|
 |`data`           |Object: The data payload of the message.|
 |`data.error`     |String: The descriptive error message.|
+|`data.category`  |String: The category of error. `personal` for messages that should only be displayed to the affected player, `public` for messages that should be broadcast to the lobby, or `info` for messages that should only output to the browser console with `console.warn()`.|
 |`data.byPlayerId`|Integer: The ID of the player who performed the illegal action.|
 
 <details><summary>The potential illegal actions that are anticipated and caught are:</summary>
@@ -537,5 +641,7 @@ This message is broadcast to all players after any illegal action is performed b
   - "\<player name\> attempted to submit an invalid hint"
 - A Spy player submits a guess with a card ID not present in this game
   - "\<player name\> attempted to submit a guess for a card not in this game"
+- A Player attempts to select a role or team that is full.
+  - Various: see [`Player#err`](app/models/player.rb)
 
 </details>

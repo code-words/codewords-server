@@ -1,4 +1,5 @@
 class GameDataChannel < ApplicationCable::Channel
+  include LobbyActions
   on_subscribe :welcome_player
 
   def subscribed
@@ -27,25 +28,15 @@ class GameDataChannel < ApplicationCable::Channel
     else
       game.advance!
 
-      saved_hint = current_player.game.hints.create(
+      saved_hint = game.hints.create(
         team: current_player.team,
         word: hint["hintWord"],
         num: hint["numCards"].to_i
       )
 
-      payload = {
-        type: 'hint-provided',
-        data: {
-          isBlueTeam: saved_hint.blue?,
-          hintWord: saved_hint.word,
-          relatedCards: saved_hint.num,
-          currentPlayerId: game.current_player.id
-        }
-      }
-
       game.guesses_remaining = saved_hint.num + 1
       game.save
-      broadcast_message payload
+      provide_hint saved_hint
     end
   end
 
@@ -69,6 +60,15 @@ class GameDataChannel < ApplicationCable::Channel
     end
   end
 
+  def start_game
+    game = current_player.game
+    game.reload
+    if all_players_in?(game) && game.game_cards.count == 0
+      game.establish!
+      game_setup
+    end
+  end
+
   private
 
           ##  ######   #######  ##    ##
@@ -87,22 +87,13 @@ class GameDataChannel < ApplicationCable::Channel
     ##    ## ##     ## ##     ## ##        ##     ## ##    ## ##       ##    ##  ##    ##
      ######   #######  ##     ## ##         #######   ######  ######## ##     ##  ######
 
-    def compose_roster(game)
-      game.players.map do |p|
-        {
-          id: p.id,
-          name: p.name
-        }
-      end
-    end
-
     def compose_players(game)
       game.players.map do |p|
         {
           id: p.id,
           name: p.name,
-          isBlueTeam: p.blue?,
-          isIntel: p.intel?
+          isBlueTeam: p.is_blue_team?,
+          isIntel: p.is_intel?
         }
       end
     end
@@ -143,29 +134,25 @@ class GameDataChannel < ApplicationCable::Channel
         data: {
           id: current_player.id,
           name: current_player.name,
-          playerRoster: compose_roster(current_player.game)
+          isBlueTeam: current_player.is_blue_team?,
+          isIntel: current_player.is_intel?,
+          playerRoster: compose_players(current_player.game)
         }
       }
       broadcast_message payload
-      start_game
     end
 
-    def start_game
+    def game_setup
       game = current_player.game
-      game.reload
-      if all_players_in?(game) && game.game_cards.count == 0
-        game.establish!
-
-        payload = {
-          type: "game-setup",
-          data: {
-            cards: compose_cards(game),
-            players: compose_players(game),
-            firstPlayerId: game.current_player.id
-          }
+      payload = {
+        type: "game-setup",
+        data: {
+          cards: compose_cards(game),
+          players: compose_players(game),
+          firstPlayerId: game.current_player.id
         }
-        broadcast_message payload
-      end
+      }
+      broadcast_message payload
     end
 
     def illegal_action(message)
@@ -174,6 +161,20 @@ class GameDataChannel < ApplicationCable::Channel
         data: {
           error: message,
           byPlayerId: current_player.id
+        }
+      }
+      broadcast_message payload
+    end
+
+    def provide_hint(hint)
+      game = current_player.game
+      payload = {
+        type: 'hint-provided',
+        data: {
+          isBlueTeam: hint.blue?,
+          hintWord: hint.word,
+          relatedCards: hint.num,
+          currentPlayerId: game.current_player.id
         }
       }
       broadcast_message payload
